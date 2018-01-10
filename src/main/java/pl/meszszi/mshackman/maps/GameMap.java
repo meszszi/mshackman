@@ -4,6 +4,7 @@ import main.java.pl.meszszi.mshackman.MapElement;
 import main.java.pl.meszszi.mshackman.IDangerous;
 import main.java.pl.meszszi.mshackman.IPrecious;
 import main.java.pl.meszszi.mshackman.Position;
+import main.java.pl.meszszi.mshackman.bugs.Bug;
 import main.java.pl.meszszi.mshackman.field.MapField;
 import main.java.pl.meszszi.mshackman.field.Portal;
 import main.java.pl.meszszi.mshackman.players.Player;
@@ -22,7 +23,7 @@ public class GameMap {
     private ArrayList<ArrayList<MapField>> field;
     private ArrayList<Player> players;
     private ArrayList<IPrecious> items;
-    private ArrayList<IDangerous> obstacles;
+    private ArrayList<Bug> bugs;
     private ArrayList<Portal> portals;
 
 
@@ -61,6 +62,22 @@ public class GameMap {
     }
 
 
+    /**
+     * Getter for players.
+     * @return this.players.
+     */
+    public ArrayList<Player> getPlayers() {
+        return this.players;
+    }
+
+
+    /**
+     * Getter for bugs.
+     * @return this.bugs.
+     */
+    public ArrayList<Bug> getBugs() {
+        return this.bugs;
+    }
 
     public void updateField(String fieldStr) {
 

@@ -56,6 +56,26 @@ public class Position {
 
 
     /**
+     * Subtracts given Position's coordinates from this.
+     * @param p - Position to subtract
+     * @return new Position created by subtracting p from this.
+     */
+    public Position subtract(Position p) {
+        return new Position(this.x - p.getX(), this.y - p.getY());
+    }
+
+
+    /**
+     * Creates new Position by multiplying coordinates by given scalar.
+     * @param scalar - number by which coordinates are multiplied
+     * @return scaled position.
+     */
+    public Position multiply(int scalar) {
+        return new Position(this.getX() * scalar, this.getY() * scalar);
+    }
+
+
+    /**
      * Creates new Position by moving this in given MoveDirection.
      * @param direction - MoveDirection in witch this should be moved
      * @return new Position created by moving this to given direction
@@ -71,8 +91,10 @@ public class Position {
         if(direction == MoveDirection.UP)
             return this.add(0, -1);
 
-        // else -> move down
-        return this.add(0, 1);
+        if(direction == MoveDirection.DOWN)
+            return this.add(0, 1);
+
+        return this;
     }
 
 
@@ -95,4 +117,7 @@ public class Position {
     public int getDistanceSquare(Position p) {
         return (this.x + p.getX())^2 + (this.y + p.getY())^2;
     }
+
+
+
 }

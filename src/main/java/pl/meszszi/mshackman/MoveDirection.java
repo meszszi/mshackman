@@ -15,7 +15,7 @@ public enum MoveDirection {
      * Finds opposite direction to this.
      * @return MoveDirection opposite to this
      */
-    MoveDirection getOpposite() {
+    public MoveDirection getOpposite() {
         switch (this){
 
             case LEFT:
@@ -32,6 +32,31 @@ public enum MoveDirection {
 
             default:
                 return null;
+        }
+    }
+
+
+    /**
+     * Creates Position vector according to move direction.
+     * @return proper Position (vector).
+     */
+    public Position getVector() {
+        switch (this){
+
+            case LEFT:
+                return new Position(-1, 0);
+
+            case RIGHT:
+                return new Position(1, 0);
+
+            case UP:
+                return new Position(0, -1);
+
+            case DOWN:
+                return new Position(0, 1);
+
+            default:
+                return new Position(0, 0);
         }
     }
 }
