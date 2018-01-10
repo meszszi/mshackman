@@ -1,7 +1,6 @@
 package main.java.pl.meszszi.mshackman.bugs;
 
-import main.java.pl.meszszi.mshackman.FieldObject;
-import main.java.pl.meszszi.mshackman.maps.GameField;
+import main.java.pl.meszszi.mshackman.maps.GameMap;
 import main.java.pl.meszszi.mshackman.IDangerous;
 import main.java.pl.meszszi.mshackman.MoveDirection;
 import main.java.pl.meszszi.mshackman.Position;
@@ -9,21 +8,34 @@ import main.java.pl.meszszi.mshackman.Position;
 import java.util.ArrayList;
 
 /**
- * Abstract class that represents any bug on the game field.
+ * Abstract class that represents any bug on the game map.
  */
 
-public abstract class Bug extends FieldObject implements IDangerous {
+public abstract class Bug implements IDangerous {
 
-    private MoveDirection facingDirection;
+    protected final BugType type;
+    protected final GameMap map;
+    protected Position position;
+    protected MoveDirection facingDirection;
 
-    private final GameField field;
 
-    public Bug(GameField field) {
-        this.field = field;
+    public Bug(GameMap map, BugType type) {
+        this.map = map;
+        this.type = type;
     }
 
+
     /**
-     * Finds all potential targets on the game field according to bug's AI (most of the time there will be one target,
+     * Getter for type.
+     * @return this.type
+     */
+    public BugType getType() {
+        return this.type;
+    }
+
+
+    /**
+     * Finds all potential targets on the game map according to bug's AI (most of the time there will be one target,
      * but some cases require analysing more possibilities, e.g. both players are equally distant from Chase type bug).
      * @return ArrayList of all possible target Positions
      */
