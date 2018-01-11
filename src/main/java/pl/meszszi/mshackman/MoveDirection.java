@@ -59,4 +59,29 @@ public enum MoveDirection {
                 return new Position(0, 0);
         }
     }
+
+
+    /**
+     * Simple toString method.
+     * @return string representing move direction.
+     */
+    public String toString (){
+        switch (this) {
+
+            case LEFT:
+                return "left";
+
+            case RIGHT:
+                return "right";
+
+            case UP:
+                return "up";
+
+            case DOWN:
+                return "down";
+
+            default:
+                return null;
+        }
+    }
 }

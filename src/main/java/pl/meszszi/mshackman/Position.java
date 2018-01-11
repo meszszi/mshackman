@@ -119,5 +119,20 @@ public class Position {
     }
 
 
+    /**
+     * Calculates direction in which this is located relatively to given position.
+     * @param p - another Position
+     * @return proper MoveDirection if this is adjacent to p, null otherwise.
+     */
+    public MoveDirection getDirectionFrom(Position p) {
+
+        for(MoveDirection direction : MoveDirection.values())
+            if(p.move(direction).equals(this))
+                return direction;
+
+        return null;
+    }
+
+
 
 }

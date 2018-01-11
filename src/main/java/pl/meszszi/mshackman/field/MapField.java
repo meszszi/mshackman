@@ -39,10 +39,10 @@ public class MapField extends MapElement{
 
         for(MoveDirection direction : MoveDirection.values()) {
             Position adjPosition = this.position.move(direction);
-            MapField field = this.map.getField(adjPosition);
+            //MapField field = this.map.getField(adjPosition);
 
-            if(field == null || !field.isAccessible())  // Skips the loop iteration if the field is outside the map or is inaccessible.
-                continue;
+            //if(field == null || !field.isAccessible())  // Skips the loop iteration if the field is outside the map or is inaccessible.
+            //    continue;
 
         }
 

@@ -12,16 +12,22 @@ import main.java.pl.meszszi.mshackman.maps.GameMap;
  */
 
 public class Portal extends MapElement {
-    private final Portal matchingPortal;
+    private Portal matchingPortal;
     private final MoveDirection portalDirection;    // Direction in which player must move while standing on a portal
                                                     // in order to appear on the spot of the other one.
 
-    public Portal(GameMap map, Position position, Portal matchingPortal, MoveDirection portalDirection) {
+    public Portal(GameMap map, Position position, MoveDirection portalDirection) {
         super(map, position);
-        this.matchingPortal = matchingPortal;
         this.portalDirection = portalDirection;
     }
 
 
+    public void setMatchingPortal(Portal matchingPortal) {
+        this.matchingPortal = matchingPortal;
+    }
 
+
+    public Portal getMatchingPortal() {
+        return matchingPortal;
+    }
 }

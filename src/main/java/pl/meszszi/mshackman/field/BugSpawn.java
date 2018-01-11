@@ -14,6 +14,7 @@ import main.java.pl.meszszi.mshackman.maps.GameMap;
 public class BugSpawn extends MapElement implements IDangerous {
 
     private final BugType spawnType;
+    private int nextSpawnTime = 0;
 
     public BugSpawn(GameMap map, Position position, BugType spawnType) {
         super(map, position);
