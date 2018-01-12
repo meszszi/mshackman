@@ -9,7 +9,7 @@ import main.java.pl.meszszi.mshackman.maps.GameMap;
 
 public class Hero extends Player {
 
-    public Hero(GameMap map, Position position) {
-        super(PlayerType.HERO, map, position);
+    public Hero(GameMap map, Position position, int ID) {
+        super(map, position, ID);
     }
 }

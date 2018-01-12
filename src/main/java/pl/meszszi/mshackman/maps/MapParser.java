@@ -1,8 +1,15 @@
 package main.java.pl.meszszi.mshackman.maps;
 
+import main.java.pl.meszszi.mshackman.IValuable;
 import main.java.pl.meszszi.mshackman.MoveDirection;
 import main.java.pl.meszszi.mshackman.Position;
+import main.java.pl.meszszi.mshackman.bomb.Bomb;
+import main.java.pl.meszszi.mshackman.bugs.*;
+import main.java.pl.meszszi.mshackman.field.BugSpawn;
 import main.java.pl.meszszi.mshackman.field.Portal;
+import main.java.pl.meszszi.mshackman.items.BombItem;
+import main.java.pl.meszszi.mshackman.items.CodeSnippet;
+import main.java.pl.meszszi.mshackman.players.Player;
 
 import java.util.ArrayList;
 
@@ -11,9 +18,10 @@ import java.util.ArrayList;
  */
 
 public class MapParser {
+
     private final GameMap map;
 
-    public MapParser(GameMap map) {
+    MapParser(GameMap map) {
         this.map = map;
     }
 
@@ -23,7 +31,7 @@ public class MapParser {
      * as the board layout doesn't change throughout the game.
      * @param boardRepresentation - String array, each element representing single field on the board.
      */
-    public void initializeBoard(String[] boardRepresentation) {
+    void initializeBoard(String[] boardRepresentation) {
 
         int width = this.map.getWidth();
         int height = this.map.getHeight();
@@ -52,5 +60,132 @@ public class MapParser {
         // Sets matching portals.
         portals.get(0).setMatchingPortal(portals.get(1));
         portals.get(1).setMatchingPortal(portals.get(0));
+    }
+
+
+    /**
+     * Updates all lists of movable objects present on gameMap (players, items and bugs).
+     * @param boardRepresentation - String array, each element containing info about single field.
+     */
+    void updateMapObjects(String[] boardRepresentation) {
+
+        int width = this.map.getWidth();
+        int height = this.map.getHeight();
+
+        if(boardRepresentation.length != width * height) {
+            System.err.println(String.format("Board string representation length (%d) doesn't match with given width (%d) and height (%d)",
+                    boardRepresentation.length, width, height));
+
+            return;
+        }
+
+        ArrayList<Player> players = new ArrayList<>();
+        ArrayList<IValuable> items = new ArrayList<>();
+        ArrayList<Bug> bugs = new ArrayList<>();
+        ArrayList<BugSpawn> spawns = new ArrayList<>();
+        ArrayList<Bomb> bombs = new ArrayList<>();
+
+        for(int i = 0; i < boardRepresentation.length; i++) {
+
+            Position position = new Position(i % width, i / height);
+
+            String field = boardRepresentation[i];
+
+            int playerIndex = field.indexOf("P");
+            if(playerIndex >= 0) {
+                int playerID = Integer.parseInt(field.substring(playerIndex + 1, playerIndex + 2));
+
+                players.add(new Player(map, position, playerID));
+            }
+
+            int bugIndex = field.indexOf("E");
+            if(bugIndex >= 0) {
+                switch(field.charAt(bugIndex + 1)) {
+
+                    case '0':
+                        bugs.add(new BugChase(map, position));
+                        break;
+
+                    case '1':
+                        bugs.add(new BugPredict(map, position));
+                        break;
+
+                    case '2':
+                        bugs.add(new BugLever(map, position));
+                        break;
+
+                    case '3':
+                        bugs.add(new BugFarChase(map, position));
+                        break;
+                }
+            }
+
+            int spawnIndex = field.indexOf("S");
+            if(spawnIndex >= 0) {
+                int time = -1;
+                if(Character.isDigit(field.charAt(spawnIndex + 1)))
+                    time = Integer.parseInt(field.substring(spawnIndex + 1, spawnIndex + 2));
+
+                BugType bugType = BugType.values()[spawns.size()];
+
+                spawns.add(new BugSpawn(map, position, bugType, time));
+            }
+
+            int bombIndex = field.indexOf("B");
+            if(bombIndex >= 0) {
+
+                if(Character.isDigit(field.charAt(bombIndex + 1))) {
+                    int time = Integer.parseInt(field.substring(spawnIndex + 1, spawnIndex + 2));
+                    bombs.add(new Bomb(map, position, time));
+                }
+
+                else {
+                    items.add(new BombItem(map, position));
+                }
+            }
+
+            int snippetIndex = field.indexOf("C");
+            if(snippetIndex >= 0) {
+                items.add(new CodeSnippet(map, position));
+            }
+        }
+
+        updateBugsInfo(bugs);
+        updatePlayersInfo(players);
+
+        map.setPlayers(players);
+        map.setBugs(bugs);
+        map.setItems(items);
+        map.setBombs(bombs);
+    }
+
+
+    /**
+     * Sets MoveDirection fields for players on map according to current position in relation to previous position.
+     * @param newPlayers - array of new players on the map
+     */
+    private void updatePlayersInfo(ArrayList<Player> newPlayers) {
+        ArrayList<Player> oldPlayers = map.getPlayers();
+
+        for(Player newPlayer : newPlayers) {
+            for(Player oldPlayer : oldPlayers)
+                if(newPlayer.getID() == oldPlayer.getID())
+                    newPlayer.setFacingDirection(newPlayer.getPosition().getDirectionFrom(oldPlayer.getPosition()));
+        }
+    }
+
+
+    /**
+     * Sets MoveDirection fields for bugs on map according to previous positions.
+     * @param newBugs - array of new bugs on the map
+     */
+    private void updateBugsInfo(ArrayList<Bug> newBugs) {
+        ArrayList<Bug> oldBugs = map.getBugs();
+
+        for(Bug newBug : newBugs) {
+            for(Bug oldBug : oldBugs)
+                if(newBug.getType() == oldBug.getType() && newBug.getPosition().getDirectionFrom(oldBug.getPosition()) != null)
+                    newBug.setFacingDirection(newBug.getPosition().getDirectionFrom(oldBug.getPosition()));
+        }
     }
 }

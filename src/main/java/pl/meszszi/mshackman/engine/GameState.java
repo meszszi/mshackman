@@ -140,7 +140,9 @@ public class GameState {
         return this.timebank;
     }
 
-
+    public String[] getBoardUpdate() {
+        return this.boardUpdate;
+    }
 
     public int getHeroSnippetCount() {
         return heroSnippetCount;

@@ -7,6 +7,6 @@ package main.java.pl.meszszi.mshackman.bugs;
 public enum BugType {
     CHASE,
     PREDICT,
-    LEVER,
-    FAR_CHASE
+    FAR_CHASE,
+    LEVER
 }

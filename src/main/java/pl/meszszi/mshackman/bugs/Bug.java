@@ -68,4 +68,13 @@ public abstract class Bug extends MapElement implements IDangerous {
 
         return optimalMoves;
     }
+
+
+    /**
+     * Setter for facingDirection
+     * @param facingDirection - new facingDirection
+     */
+    public void setFacingDirection(MoveDirection facingDirection) {
+        this.facingDirection = facingDirection;
+    }
 }

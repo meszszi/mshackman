@@ -9,7 +9,7 @@ import main.java.pl.meszszi.mshackman.maps.GameMap;
 
 public class Enemy extends Player {
 
-    public Enemy(GameMap map, Position position) {
-        super(PlayerType.ENEMY, map, position);
+    public Enemy(GameMap map, Position position, int ID) {
+        super(map, position, ID);
     }
 }

@@ -10,14 +10,14 @@ import main.java.pl.meszszi.mshackman.maps.GameMap;
  */
 
 public class Player extends MapElement{
-    private final PlayerType type;
+    private final int playerID;
     private MoveDirection facingDirection;
     private int codeSnippets;
     private int bombs;
 
-    public Player(PlayerType type, GameMap map, Position position) {
+    public Player(GameMap map, Position position, int playerID) {
         super(map, position);
-        this.type = type;
+        this.playerID = playerID;
         this.facingDirection = null;
         this.codeSnippets = 0;
         this.bombs = 0;
@@ -28,8 +28,8 @@ public class Player extends MapElement{
      * Getter for type.
      * @return this.type.
      */
-    public PlayerType getType() {
-        return this.type;
+    public int getID() {
+        return this.playerID;
     }
 
 
@@ -39,5 +39,14 @@ public class Player extends MapElement{
      */
     public MoveDirection getFacingDirection() {
         return this.facingDirection;
+    }
+
+
+    /**
+     * Setter for facingDirection
+     * @param facingDirection
+     */
+    public void setFacingDirection(MoveDirection facingDirection) {
+        this.facingDirection = facingDirection;
     }
 }

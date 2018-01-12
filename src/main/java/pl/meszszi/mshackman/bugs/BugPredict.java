@@ -23,7 +23,7 @@ public class BugPredict extends Bug {
      */
     @Override
     public Position obtainTarget() {
-        Player closestPlayer = new Player(null, null, null);
+        MoveDirection predictDirection = null;
         Position target = new Position(0, 0);
         int minDistance = Integer.MAX_VALUE;
 
@@ -31,13 +31,13 @@ public class BugPredict extends Bug {
             int distance = player.getPosition().getDistanceSquare(this.position);
 
             if(distance < minDistance) {
-                closestPlayer = player;
+                predictDirection = player.getFacingDirection();
                 target = player.getPosition();
                 minDistance = distance;
             }
         }
 
-        Position vector = closestPlayer.getFacingDirection().getVector();
+        Position vector = predictDirection.getVector();
 
         target = target.add(vector.multiply(4)); // Moves target towards player's facing direction by 4 fields.
 
