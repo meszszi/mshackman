@@ -26,8 +26,11 @@ public class Portal extends MapElement {
         this.matchingPortal = matchingPortal;
     }
 
-
     public Portal getMatchingPortal() {
         return matchingPortal;
+    }
+
+    public MoveDirection getPortalDirection() {
+        return portalDirection;
     }
 }

@@ -3,9 +3,11 @@ package main.java.pl.meszszi.mshackman.maps;
 import main.java.pl.meszszi.mshackman.IValuable;
 import main.java.pl.meszszi.mshackman.MoveDirection;
 import main.java.pl.meszszi.mshackman.Position;
+import main.java.pl.meszszi.mshackman.ValidMove;
 import main.java.pl.meszszi.mshackman.bomb.Bomb;
 import main.java.pl.meszszi.mshackman.bugs.*;
 import main.java.pl.meszszi.mshackman.field.BugSpawn;
+import main.java.pl.meszszi.mshackman.field.MapField;
 import main.java.pl.meszszi.mshackman.field.Portal;
 import main.java.pl.meszszi.mshackman.items.BombItem;
 import main.java.pl.meszszi.mshackman.items.CodeSnippet;
@@ -27,7 +29,7 @@ public class MapParser {
 
 
     /**
-     * Fills walls array with proper values, creates portals list. Note that this needs to be done only at the beginning of the game
+     * Fills board array with proper values, creates portals list. Note that this needs to be done only at the beginning of the game
      * as the board layout doesn't change throughout the game.
      * @param boardRepresentation - String array, each element representing single field on the board.
      */
@@ -35,7 +37,7 @@ public class MapParser {
 
         int width = this.map.getWidth();
         int height = this.map.getHeight();
-        Boolean[][] walls = this.map.getWalls();
+        MapField[][] board = this.map.getBoard();
         ArrayList<Portal> portals = new ArrayList<>();
 
         if(boardRepresentation.length != width * height) {
@@ -46,7 +48,9 @@ public class MapParser {
         }
 
         for(int i = 0; i < boardRepresentation.length; i++) {
-            walls[i % width][i / width] = boardRepresentation[i].equals("x");
+
+            if(!boardRepresentation[i].equals("x"))
+                board[i % width][i / width].setAsAccessible();
 
             int index = boardRepresentation[i].indexOf("G");    // Searches for 'G' letter, which stands for portal field.
 
@@ -61,7 +65,26 @@ public class MapParser {
         portals.get(0).setMatchingPortal(portals.get(1));
         portals.get(1).setMatchingPortal(portals.get(0));
 
-        this.map.setPortals(portals);
+        // Sets all validMoves for fields on the board
+        for(int i = 0; i < board.length; i++)
+            for(int j = 0; j < board[i].length; j++)
+                if(board[i][j].isAccessible())
+                    for(MoveDirection direction : MoveDirection.values()) {
+
+                        Position position = (new Position(i, j)).move(direction);
+
+                        if(!map.isInsideMap(position))
+                            continue;
+
+                        MapField field = board[position.getX()][position.getY()];
+
+                        if(field.isAccessible())
+                            board[i][j].extendValidMoves(new ValidMove(position, direction));
+                    }
+
+        for(Portal portal : portals)
+            board[portal.getPosition().getX()][portal.getPosition().getY()].extendValidMoves(
+                    new ValidMove(portal.getMatchingPortal().getPosition(), portal.getPortalDirection()));
     }
 
 
@@ -136,15 +159,15 @@ public class MapParser {
 
             int bombIndex = field.indexOf("B");
             if(bombIndex >= 0) {
-/*
+
                 if(field.length() > bombIndex + 1 && Character.isDigit(field.charAt(bombIndex + 1))) {
-                    int time = Integer.parseInt(field.substring(spawnIndex + 1, spawnIndex + 2));
+                    int time = Character.getNumericValue(field.charAt(spawnIndex + 1));
                     bombs.add(new Bomb(map, position, time));
                 }
 
                 else {
                     bombItems.add(new BombItem(map, position));
-                }*/
+                }
             }
 
             int snippetIndex = field.indexOf("C");

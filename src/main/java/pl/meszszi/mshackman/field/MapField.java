@@ -14,12 +14,17 @@ import java.util.ArrayList;
 
 public class MapField extends MapElement{
 
-    private final boolean accessible;
+    private boolean accessible;
     private ArrayList<ValidMove> validMoves;
 
-    public MapField(GameMap map, Position position, boolean accessible) {
+    public MapField(GameMap map, Position position) {
         super(map, position);
-        this.accessible = accessible;
+        this.accessible = false;
+        this.validMoves = new ArrayList<>();
+    }
+
+    public void setAsAccessible() {
+        this.accessible = true;
     }
 
 

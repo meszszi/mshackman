@@ -3,9 +3,11 @@ package main.java.pl.meszszi.mshackman.maps;
 import main.java.pl.meszszi.mshackman.IValuable;
 import main.java.pl.meszszi.mshackman.MoveDirection;
 import main.java.pl.meszszi.mshackman.Position;
+import main.java.pl.meszszi.mshackman.ValidMove;
 import main.java.pl.meszszi.mshackman.bomb.Bomb;
 import main.java.pl.meszszi.mshackman.bugs.Bug;
 import main.java.pl.meszszi.mshackman.engine.GameState;
+import main.java.pl.meszszi.mshackman.field.MapField;
 import main.java.pl.meszszi.mshackman.field.Portal;
 import main.java.pl.meszszi.mshackman.items.BombItem;
 import main.java.pl.meszszi.mshackman.items.CodeSnippet;
@@ -26,14 +28,12 @@ public class GameMap {
     private int width;
     private int height;
 
-    private Boolean[][] walls; // Array representing game walls -> 0 stands for empty (accessible) field, 1 represents wall.
+    private MapField[][] board; // Array representing game walls -> 0 stands for empty (accessible) field, 1 represents wall.
     private ArrayList<Player> players;
     private ArrayList<BombItem> bombItems;
     private ArrayList<CodeSnippet> codeSnippets;
     private ArrayList<Bug> bugs;
     private ArrayList<Bomb> bombs;
-    private ArrayList<Portal> portals;
-
 
     public GameMap(GameState gameState) {
 
@@ -49,16 +49,16 @@ public class GameMap {
         this.width = gameState.getBoardWidth();
         this.height = gameState.getBoardHeight();
 
-        this.walls = new Boolean[width][];
-        for(int i = 0; i < width; i++)
-            this.walls[i] = new Boolean[height];
+        this.board = new MapField[width][height];
+
+        for(int i = 0; i < width * height; i++)
+            this.board[i % width][i / width] = new MapField(this, new Position(i % width, i / width));
 
         mapParser.initializeBoard(gameState.getBoardUpdate());
 
         this.players = new ArrayList<>();
         this.bombItems = new ArrayList<>();
         this.codeSnippets = new ArrayList<>();
-        this.portals = new ArrayList<>();
         this.bugs = new ArrayList<>();
         this.bombs = new ArrayList<>();
         update();
@@ -72,14 +72,6 @@ public class GameMap {
         mapParser.updateMapObjects(gameState.getBoardUpdate());
     }
 
-    void setWidth(int width) {
-        this.width = width;
-    }
-
-    void setHeight(int height) {
-        this.height = height;
-    }
-
     int getWidth() {
         return this.width;
     }
@@ -88,12 +80,8 @@ public class GameMap {
         return this.height;
     }
 
-    Boolean[][] getWalls() {
-        return this.walls;
-    }
-
-    ArrayList<Portal> getPortals() {
-        return this.portals;
+    MapField[][] getBoard() {
+        return this.board;
     }
 
     /**
@@ -123,10 +111,6 @@ public class GameMap {
         this.bugs = bugs;
     }
 
-    void setPortals(ArrayList<Portal> portals) {
-        this.portals = portals;
-    }
-
 
     void setBombItems(ArrayList<BombItem> bombItems) {
         this.bombItems = bombItems;
@@ -154,21 +138,8 @@ public class GameMap {
      * @param position - starting position
      * @return array of moves from position that do not collide with any wall.
      */
-    public MoveDirection[] getValidMoves(Position position) {
-        LinkedList<MoveDirection> validMoves = new LinkedList<>();
-
-        if(!this.walls[position.getX()][position.getY()]) {
-
-            for(MoveDirection direction : MoveDirection.values()){
-
-                Position nextPos = position.move(direction);
-
-                if(isInsideMap(nextPos) && !this.walls[nextPos.getX()][nextPos.getY()])
-                    validMoves.add(direction);
-            }
-        }
-
-        return validMoves.toArray(new MoveDirection[validMoves.size()]);
+    public ArrayList<ValidMove> getValidMoves(Position position) {
+        return board[position.getX()][position.getY()].getValidMoves();
     }
 
 
