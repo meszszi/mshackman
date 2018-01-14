@@ -71,6 +71,7 @@ public class GameState {
 
     void setBoardUpdate(String boardUpdate) {
         this.boardUpdate = boardUpdate.split(",");
+        int xd = this.boardUpdate.length;
     }
 
 

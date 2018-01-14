@@ -10,6 +10,16 @@ public class MoveRequest {
     private MoveDirection moveDirection;
     private int bombTimer;
 
+    public MoveRequest() {
+        this.moveDirection = null;
+        this.bombTimer = 0;
+    }
+
+    public MoveRequest(MoveDirection moveDirection) {
+        this.moveDirection = moveDirection;
+        this.bombTimer = 0;
+    }
+
     public void setMoveDirection(MoveDirection moveDirection) {
         this.moveDirection = moveDirection;
     }

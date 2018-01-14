@@ -3,6 +3,7 @@ package main.java.pl.meszszi.mshackman.field;
 import main.java.pl.meszszi.mshackman.MapElement;
 import main.java.pl.meszszi.mshackman.MoveDirection;
 import main.java.pl.meszszi.mshackman.Position;
+import main.java.pl.meszszi.mshackman.ValidMove;
 import main.java.pl.meszszi.mshackman.maps.GameMap;
 
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 public class MapField extends MapElement{
 
     private final boolean accessible;
+    private ArrayList<ValidMove> validMoves;
 
     public MapField(GameMap map, Position position, boolean accessible) {
         super(map, position);
@@ -47,5 +49,15 @@ public class MapField extends MapElement{
         }
 
         return adjacent;
+    }
+
+
+    public void extendValidMoves(ValidMove move) {
+        this.validMoves.add(move);
+    }
+
+
+    public ArrayList<ValidMove> getValidMoves() {
+        return validMoves;
     }
 }

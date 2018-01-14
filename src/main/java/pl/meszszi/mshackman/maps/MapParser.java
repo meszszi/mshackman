@@ -36,7 +36,7 @@ public class MapParser {
         int width = this.map.getWidth();
         int height = this.map.getHeight();
         Boolean[][] walls = this.map.getWalls();
-        ArrayList<Portal> portals = this.map.getPortals();
+        ArrayList<Portal> portals = new ArrayList<>();
 
         if(boardRepresentation.length != width * height) {
             System.err.println(String.format("Board string representation length (%d) doesn't match with given width (%d) and height (%d)",
@@ -46,12 +46,12 @@ public class MapParser {
         }
 
         for(int i = 0; i < boardRepresentation.length; i++) {
-            walls[i % width][i / height] = boardRepresentation[i].equals("x");
+            walls[i % width][i / width] = boardRepresentation[i].equals("x");
 
             int index = boardRepresentation[i].indexOf("G");    // Searches for 'G' letter, which stands for portal field.
 
             if(index >= 0) {
-                Position position = new Position(i % width, i / height);
+                Position position = new Position(i % width, i / width);
                 MoveDirection direction = (boardRepresentation[i].charAt(index + 1) == 'l') ? MoveDirection.LEFT : MoveDirection.RIGHT;
                 portals.add(new Portal(this.map, position, direction));
             }
@@ -60,6 +60,8 @@ public class MapParser {
         // Sets matching portals.
         portals.get(0).setMatchingPortal(portals.get(1));
         portals.get(1).setMatchingPortal(portals.get(0));
+
+        this.map.setPortals(portals);
     }
 
 
@@ -80,14 +82,15 @@ public class MapParser {
         }
 
         ArrayList<Player> players = new ArrayList<>();
-        ArrayList<IValuable> items = new ArrayList<>();
+        ArrayList<BombItem> bombItems = new ArrayList<>();
+        ArrayList<CodeSnippet> codeSnippets = new ArrayList<>();
         ArrayList<Bug> bugs = new ArrayList<>();
         ArrayList<BugSpawn> spawns = new ArrayList<>();
         ArrayList<Bomb> bombs = new ArrayList<>();
 
         for(int i = 0; i < boardRepresentation.length; i++) {
 
-            Position position = new Position(i % width, i / height);
+            Position position = new Position(i % width, i / width);
 
             String field = boardRepresentation[i];
 
@@ -123,7 +126,7 @@ public class MapParser {
             int spawnIndex = field.indexOf("S");
             if(spawnIndex >= 0) {
                 int time = -1;
-                if(Character.isDigit(field.charAt(spawnIndex + 1)))
+                if(field.length() > spawnIndex + 1 && Character.isDigit(field.charAt(spawnIndex + 1)))
                     time = Integer.parseInt(field.substring(spawnIndex + 1, spawnIndex + 2));
 
                 BugType bugType = BugType.values()[spawns.size()];
@@ -133,20 +136,20 @@ public class MapParser {
 
             int bombIndex = field.indexOf("B");
             if(bombIndex >= 0) {
-
-                if(Character.isDigit(field.charAt(bombIndex + 1))) {
+/*
+                if(field.length() > bombIndex + 1 && Character.isDigit(field.charAt(bombIndex + 1))) {
                     int time = Integer.parseInt(field.substring(spawnIndex + 1, spawnIndex + 2));
                     bombs.add(new Bomb(map, position, time));
                 }
 
                 else {
-                    items.add(new BombItem(map, position));
-                }
+                    bombItems.add(new BombItem(map, position));
+                }*/
             }
 
             int snippetIndex = field.indexOf("C");
             if(snippetIndex >= 0) {
-                items.add(new CodeSnippet(map, position));
+                codeSnippets.add(new CodeSnippet(map, position));
             }
         }
 
@@ -155,7 +158,8 @@ public class MapParser {
 
         map.setPlayers(players);
         map.setBugs(bugs);
-        map.setItems(items);
+        map.setBombItems(bombItems);
+        map.setCodeSnippets(codeSnippets);
         map.setBombs(bombs);
     }
 

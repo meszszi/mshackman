@@ -1,5 +1,6 @@
 package main.java.pl.meszszi.mshackman;
 
+import main.java.pl.meszszi.mshackman.botAI.BasicBFSBot;
 import main.java.pl.meszszi.mshackman.botAI.BotAI;
 import main.java.pl.meszszi.mshackman.botAI.RandomBot;
 
@@ -9,7 +10,7 @@ import main.java.pl.meszszi.mshackman.botAI.RandomBot;
 
 public class Main {
     public static void main(String[] args) {
-        BotAI random = new RandomBot("bixie");
+        BotAI random = new BasicBFSBot("bixie");
         random.run();
     }
 }

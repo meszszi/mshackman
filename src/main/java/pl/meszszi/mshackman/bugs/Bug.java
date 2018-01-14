@@ -33,6 +33,11 @@ public abstract class Bug extends MapElement implements IDangerous {
     }
 
 
+    public MoveDirection getFacingDirection() {
+        return facingDirection;
+    }
+
+
     /**
      * Finds potential target on the game map according to bug's AI (most of the time there will be one target,
      * in case more positions meet requirements to be bug's target, only one is selected).
