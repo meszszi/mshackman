@@ -11,43 +11,17 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class BasicBFSBot extends BotAI{
+public class BasicBFSBot extends BasicPathFindBot{
 
     public BasicBFSBot(String botName) {
         super(botName);
-    }
-
-    public MoveRequest getNextMove() {
-
-        GraphField distances[][] = setDistances();
-
-        System.err.println(String.format("round: %d", gameState.getCurrentRound()));
-
-        /*for(int i = 0; i < distances[0].length; i++) {
-            for(int j = 0; j < distances.length; j++) {
-                System.err.print(String.format("%d,\t", distances[j][i].getDistanceFromSource()));
-            }
-            System.err.print("\n");
-        }*/
-
-        Position target = getClosestSnippetPosition(distances);
-
-        if(target == null)
-            return new MoveRequest();
-
-        MoveDirection direction = getDirectionToTarget(distances, gameMap.getHero().getPosition(), target);
-
-        MoveRequest moveRequest = new MoveRequest();
-        moveRequest.setMoveDirection(direction);
-
-        return moveRequest;
     }
 
 
     /**
      * Executes basic BFS algorithm on game board and sets distances from hero to every accessible field on the map
      */
-    private GraphField[][] setDistances() {
+    protected GraphField[][] setDistances() {
 
         int width = this.gameState.getBoardWidth();
         int height = this.gameState.getBoardHeight();
@@ -101,22 +75,6 @@ public class BasicBFSBot extends BotAI{
     }
 
 
-    /**
-     * Calculates optimal move in which player must move to get closer to its target point.
-     * @param distances - int array with set distances from hero's current position
-     * @param start - starting position
-     * @param target - position that hero wants to reach
-     * @return optimal MoveDirection.
-     */
-    private MoveDirection getDirectionToTarget(GraphField distances[][], Position start, Position target) {
-
-        GraphField field = distances[target.getX()][target.getY()];
-
-        while(field.getPreviousPosition() != start)
-            field = distances[field.getPreviousPosition().getX()][field.getPreviousPosition().getY()];
-
-        return field.getDirectionFromSource();
-    }
 
 
     /**
@@ -124,7 +82,7 @@ public class BasicBFSBot extends BotAI{
      * @param distances - array of distances from hero's position
      * @return position of the closest snippet
      */
-    private Position getClosestSnippetPosition(GraphField distances[][]) {
+    protected Position getTargetPosition(GraphField distances[][]) {
         Position result = new Position(0, 0);
         int distance = Integer.MAX_VALUE;
 

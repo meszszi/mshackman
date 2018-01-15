@@ -115,64 +115,66 @@ public class MapParser {
 
             Position position = new Position(i % width, i / width);
 
-            String field = boardRepresentation[i];
+            String[] fieldArray = boardRepresentation[i].split(";");
 
-            int playerIndex = field.indexOf("P");
-            if(playerIndex >= 0) {
-                int playerID = Integer.parseInt(field.substring(playerIndex + 1, playerIndex + 2));
+            for(String field : fieldArray) {
+                int playerIndex = field.indexOf("P");
+                if(playerIndex >= 0) {
+                    int playerID = Character.getNumericValue(field.charAt(playerIndex + 1));
 
-                players.add(new Player(map, position, playerID));
-            }
-
-            int bugIndex = field.indexOf("E");
-            if(bugIndex >= 0) {
-                switch(field.charAt(bugIndex + 1)) {
-
-                    case '0':
-                        bugs.add(new BugChase(map, position));
-                        break;
-
-                    case '1':
-                        bugs.add(new BugPredict(map, position));
-                        break;
-
-                    case '2':
-                        bugs.add(new BugLever(map, position));
-                        break;
-
-                    case '3':
-                        bugs.add(new BugFarChase(map, position));
-                        break;
-                }
-            }
-
-            int spawnIndex = field.indexOf("S");
-            if(spawnIndex >= 0) {
-                int time = -1;
-                if(field.length() > spawnIndex + 1 && Character.isDigit(field.charAt(spawnIndex + 1)))
-                    time = Integer.parseInt(field.substring(spawnIndex + 1, spawnIndex + 2));
-
-                BugType bugType = BugType.values()[spawns.size()];
-
-                spawns.add(new BugSpawn(map, position, bugType, time));
-            }
-
-            int bombIndex = field.indexOf("B");
-            if(bombIndex >= 0) {
-
-                if(field.length() > bombIndex + 1 && Character.isDigit(field.charAt(bombIndex + 1))) {
-                    int time = Character.getNumericValue(field.charAt(spawnIndex + 1));
-                    bombs.add(new Bomb(map, position, time));
+                    players.add(new Player(map, position, playerID));
                 }
 
-                else {
-                    bombItems.add(new BombItem(map, position));
-                }
-            }
+                int bugIndex = field.indexOf("E");
+                if(bugIndex >= 0) {
+                    switch(field.charAt(bugIndex + 1)) {
 
-            int snippetIndex = field.indexOf("C");
-            if(snippetIndex >= 0) {
-                codeSnippets.add(new CodeSnippet(map, position));
+                        case '0':
+                            bugs.add(new BugChase(map, position));
+                            break;
+
+                        case '1':
+                            bugs.add(new BugPredict(map, position));
+                            break;
+
+                        case '2':
+                            bugs.add(new BugLever(map, position));
+                            break;
+
+                        case '3':
+                            bugs.add(new BugFarChase(map, position));
+                            break;
+                    }
+                }
+
+                int spawnIndex = field.indexOf("S");
+                if(spawnIndex >= 0) {
+                    int time = -1;
+                    if(field.length() > spawnIndex + 1 && Character.isDigit(field.charAt(spawnIndex + 1)))
+                        time = Integer.parseInt(field.substring(spawnIndex + 1, spawnIndex + 2));
+
+                    BugType bugType = BugType.values()[spawns.size()];
+
+                    spawns.add(new BugSpawn(map, position, bugType, time));
+                }
+
+                int bombIndex = field.indexOf("B");
+                if(bombIndex >= 0) {
+
+                    if(field.length() > bombIndex + 1 && Character.isDigit(field.charAt(bombIndex + 1))) {
+                        int time = Character.getNumericValue(field.charAt(spawnIndex + 1));
+                        bombs.add(new Bomb(map, position, time));
+                    }
+
+                    else {
+                        bombItems.add(new BombItem(map, position));
+                    }
+                }
+
+                int snippetIndex = field.indexOf("C");
+                if(snippetIndex >= 0) {
+                    codeSnippets.add(new CodeSnippet(map, position));
+                }
             }
         }
 

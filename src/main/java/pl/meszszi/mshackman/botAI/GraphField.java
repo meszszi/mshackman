@@ -9,7 +9,7 @@ import main.java.pl.meszszi.mshackman.Position;
 
 public class GraphField {
 
-    private final int distanceFromSource;
+    private int distanceFromSource;
     private final MoveDirection directionFromSource;
     private final Position previousPosition;
 
@@ -27,7 +27,11 @@ public class GraphField {
         return directionFromSource;
     }
 
-    public Position getPreviousPosition() {
+    Position getPreviousPosition() {
         return previousPosition;
+    }
+
+    void setDistanceFromSource(int distanceFromSource) {
+        this.distanceFromSource = distanceFromSource;
     }
 }

@@ -6,4 +6,10 @@ package main.java.pl.meszszi.mshackman.maps;
 
 public class DangerMap {
 
+    private class DangerField {
+
+        int startTime;
+        int endTime;
+
+    }
 }
