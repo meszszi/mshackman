@@ -47,7 +47,7 @@ public class DijkstraBot extends BotAI {
 
         Position heroPos = gameMap.getHero().getPosition();
         Position enemyPos = gameMap.getEnemy().getPosition();
-        
+
         DijkstraNode paths[][] = setPaths(heroPos);
         int enemyPaths[][] = getEnemyPaths(enemyPos);
 
@@ -79,7 +79,7 @@ public class DijkstraBot extends BotAI {
         for(Bug bug : this.gameMap.getBugs()) {
 
             Position bugPos = bug.getPosition();
-            weights[bugPos.getX()][bugPos.getY()] = 40;
+            weights[bugPos.getX()][bugPos.getY()] += 40;
 
             for(MoveDirection direction : MoveDirection.values()) {
                 if(bug.getFacingDirection() == null || direction != bug.getFacingDirection().getOpposite()) {
@@ -87,7 +87,7 @@ public class DijkstraBot extends BotAI {
                     Position nextToBug = bugPos.move(direction);
 
                     if(gameMap.isInsideMap(nextToBug))
-                        weights[nextToBug.getX()][nextToBug.getY()] = 40;
+                        weights[nextToBug.getX()][nextToBug.getY()] += 40;
                 }
             }
         }

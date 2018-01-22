@@ -1,10 +1,8 @@
 package main.java.pl.meszszi.mshackman.bugs;
 
-import main.java.pl.meszszi.mshackman.MapElement;
+import main.java.pl.meszszi.mshackman.*;
+import main.java.pl.meszszi.mshackman.maps.DangerMap;
 import main.java.pl.meszszi.mshackman.maps.GameMap;
-import main.java.pl.meszszi.mshackman.IDangerous;
-import main.java.pl.meszszi.mshackman.MoveDirection;
-import main.java.pl.meszszi.mshackman.Position;
 
 import java.util.ArrayList;
 
@@ -13,6 +11,8 @@ import java.util.ArrayList;
  */
 
 public abstract class Bug extends MapElement implements IDangerous {
+
+    public final static int DANGER_MEASURE = 40;
 
     protected final BugType type;
     protected MoveDirection facingDirection;
@@ -48,15 +48,10 @@ public abstract class Bug extends MapElement implements IDangerous {
 
     /**
      * Finds all possible MoveDirections in which a bug can move in the next round.
-     * @return ArrayList of valid MoveDirections
+     * @return ArrayList of validMoves
      */
-    public ArrayList<MoveDirection> getValidMoves(){
-
-        ArrayList<MoveDirection> validMoves = new ArrayList<MoveDirection>();
-
-        //TODO
-
-        return validMoves;
+    public ArrayList<ValidMove> getValidMoves(){
+        return this.map.getNonPortalMoves(this.position);
     }
 
 
@@ -67,7 +62,7 @@ public abstract class Bug extends MapElement implements IDangerous {
      */
     public ArrayList<MoveDirection> getOptimalMove(ArrayList<MoveDirection> validMoves) {
 
-        ArrayList<MoveDirection> optimalMoves = new ArrayList<MoveDirection>();
+        ArrayList<MoveDirection> optimalMoves = new ArrayList<>();
 
         //TODO
 
@@ -81,5 +76,33 @@ public abstract class Bug extends MapElement implements IDangerous {
      */
     public void setFacingDirection(MoveDirection facingDirection) {
         this.facingDirection = facingDirection;
+    }
+
+
+    @Override
+    public void setDanger(DangerMap dangerMap) {
+
+        MoveDirection backDirection = this.facingDirection.getOpposite();
+        Position predictedPosition = this.position;
+        int time = 0;
+
+        while(map.getNonPortalMoves(predictedPosition).size() <= 2) {
+            dangerMap.addDanger(predictedPosition, time, this.DANGER_MEASURE);
+            MoveDirection nextDirection = null;
+
+            for(ValidMove validMove : map.getNonPortalMoves(predictedPosition))
+                if(validMove.getMoveDirection() != backDirection) {
+                    nextDirection = validMove.getMoveDirection();
+                    break;
+                }
+
+            if(nextDirection == null)
+                break;
+
+            predictedPosition = predictedPosition.move(nextDirection);
+            backDirection = nextDirection.getOpposite();
+            dangerMap.addDanger(predictedPosition, time, this.DANGER_MEASURE);
+            time ++;
+        }
     }
 }

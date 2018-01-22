@@ -16,6 +16,7 @@ public class MapField extends MapElement{
 
     private boolean accessible;
     private ArrayList<ValidMove> validMoves;
+    private ArrayList<ValidMove> nonPortalMoves;    // all valid moves for objects, that cannot go through portals
 
     public MapField(GameMap map, Position position) {
         super(map, position);
@@ -60,9 +61,17 @@ public class MapField extends MapElement{
     public void extendValidMoves(ValidMove move) {
         this.validMoves.add(move);
     }
+    public void extendNonPortalMoves(ValidMove move) {
+        this.nonPortalMoves.add(move);
+    }
+
 
 
     public ArrayList<ValidMove> getValidMoves() {
         return validMoves;
     }
+    public ArrayList<ValidMove> getNonPortalMoves() {
+        return nonPortalMoves;
+    }
+
 }

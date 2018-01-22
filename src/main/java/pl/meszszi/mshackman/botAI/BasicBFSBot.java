@@ -51,8 +51,6 @@ public class BasicBFSBot extends BasicPathFindBot{
         int lol = 0;
         while(!queue.isEmpty() && (position = queue.remove()) != null) {
 
-            System.err.println(lol++);
-
             GraphField field = distances[position.getX()][position.getY()];
 
             for(ValidMove validMove : gameMap.getValidMoves(position)) {

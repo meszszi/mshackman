@@ -143,6 +143,15 @@ public class GameMap {
     }
 
 
+    public ArrayList<ValidMove> getNonPortalMoves(Position position) {
+        return board[position.getX()][position.getY()].getNonPortalMoves();
+    }
+
+
+    public ArrayList<Bomb> getBombs() {
+        return bombs;
+    }
+
     /**
      * Retrieves Hero player from players list.
      * @return Hero player type object
@@ -176,5 +185,10 @@ public class GameMap {
      */
     public boolean isInsideMap(Position position) {
         return position.getX() >= 0 && position.getX() < width && position.getY() >= 0 && position.getY() < height;
+    }
+
+
+    public boolean isAccessible(Position position) {
+        return isInsideMap(position) && board[position.getX()][position.getY()].isAccessible();
     }
 }

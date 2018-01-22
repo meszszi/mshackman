@@ -65,7 +65,7 @@ public class MapParser {
         portals.get(0).setMatchingPortal(portals.get(1));
         portals.get(1).setMatchingPortal(portals.get(0));
 
-        // Sets all validMoves for fields on the board
+        // Sets all validMoves for fields on the board.
         for(int i = 0; i < board.length; i++)
             for(int j = 0; j < board[i].length; j++)
                 if(board[i][j].isAccessible())
@@ -78,10 +78,13 @@ public class MapParser {
 
                         MapField field = board[position.getX()][position.getY()];
 
-                        if(field.isAccessible())
+                        if(field.isAccessible()) {
                             board[i][j].extendValidMoves(new ValidMove(position, direction));
+                            board[i][j].extendNonPortalMoves(new ValidMove(position, direction));
+                        }
                     }
 
+        // Sets additional portal moves.
         for(Portal portal : portals)
             board[portal.getPosition().getX()][portal.getPosition().getY()].extendValidMoves(
                     new ValidMove(portal.getMatchingPortal().getPosition(), portal.getPortalDirection()));

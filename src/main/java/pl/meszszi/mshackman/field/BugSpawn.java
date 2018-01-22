@@ -3,7 +3,9 @@ package main.java.pl.meszszi.mshackman.field;
 import main.java.pl.meszszi.mshackman.IDangerous;
 import main.java.pl.meszszi.mshackman.MapElement;
 import main.java.pl.meszszi.mshackman.Position;
+import main.java.pl.meszszi.mshackman.bugs.Bug;
 import main.java.pl.meszszi.mshackman.bugs.BugType;
+import main.java.pl.meszszi.mshackman.maps.DangerMap;
 import main.java.pl.meszszi.mshackman.maps.GameMap;
 
 /**
@@ -20,5 +22,12 @@ public class BugSpawn extends MapElement implements IDangerous {
         super(map, position);
         this.spawnType = spawnType;
         this.nextSpawnTime = nextSpawnTime;
+    }
+
+    @Override
+    public void setDanger(DangerMap dangerMap) {
+
+        if(nextSpawnTime > 0)
+            dangerMap.addDanger(this.position, nextSpawnTime, Bug.DANGER_MEASURE);
     }
 }
