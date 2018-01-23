@@ -1,6 +1,5 @@
 package main.java.pl.meszszi.mshackman.botAI;
 
-import com.sun.org.apache.bcel.internal.classfile.Code;
 import main.java.pl.meszszi.mshackman.MoveDirection;
 import main.java.pl.meszszi.mshackman.Position;
 import main.java.pl.meszszi.mshackman.ValidMove;
@@ -17,9 +16,9 @@ import java.util.Queue;
  * Class implementing Dijkstra's path finding algorithm (bot doesn't get confused when surrounded by bugs).
  */
 
-public class DijkstraBot extends BotAI {
+public class DijkstraBot2 extends BotAI {
 
-    public DijkstraBot(String name) {
+    public DijkstraBot2(String name) {
         super(name);
     }
 
@@ -33,21 +32,23 @@ public class DijkstraBot extends BotAI {
         final Position source;
         final MoveDirection directionFromSource;
         final int distanceFromSource;
+        final int time;
 
-        DijkstraNode(Position position, Position source, MoveDirection directionFromSource, int distanceFromSource) {
+        DijkstraNode(Position position, Position source, MoveDirection directionFromSource, int distanceFromSource, int time) {
             this.distanceFromSource = distanceFromSource;
             this.source = source;
             this.position = position;
             this.directionFromSource = directionFromSource;
+            this.time = time;
         }
     }
 
     @Override
     protected MoveRequest getNextMove() {
 
-        System.err.println(gameState.getCurrentRound());
+        //System.err.println(gameState.getCurrentRound());
         System.err.println(gameMap.updateDanger());
-        System.err.println("\n");
+        //System.err.println("\n");
 
         Position heroPos = gameMap.getHero().getPosition();
         Position enemyPos = gameMap.getEnemy().getPosition();
@@ -74,7 +75,7 @@ public class DijkstraBot extends BotAI {
         int weights[][] = new int[width][height];
 
         DijkstraNode paths[][] = new DijkstraNode[width][height];
-
+/*
         // Initializes weights.
         for(int i = 0; i < width * height; i++)
             weights[i % width][i / width] = 1;
@@ -95,7 +96,7 @@ public class DijkstraBot extends BotAI {
                 }
             }
         }
-
+*/
         // Comparator for priority queue.
         Comparator<DijkstraNode> comparator = new Comparator<DijkstraNode>() {
             @Override
@@ -105,7 +106,8 @@ public class DijkstraBot extends BotAI {
         };
 
         PriorityQueue<DijkstraNode> queue = new PriorityQueue<>(comparator);
-        queue.add(new DijkstraNode(source, source, null, 0));
+        queue.add(new DijkstraNode(source, source, null,
+                gameMap.getDanger(source, 0), 0));
 
         // Actual algorithm is done here.
         while(queue.size() > 0) {
@@ -125,7 +127,8 @@ public class DijkstraBot extends BotAI {
                         target,
                         position,
                         move.getMoveDirection(),
-                        node.distanceFromSource + weights[target.getX()][target.getY()]
+                        node.distanceFromSource + 1 + gameMap.getDanger(target, node.time + 1),
+                        node.time + 1
                 ));
             }
         }
@@ -133,6 +136,56 @@ public class DijkstraBot extends BotAI {
         return paths;
     }
 
+
+    /**
+     * Looks for the closest snippet on the map.
+     * @param paths - array of graph nodes
+     * @return position of the closest snippet.
+     */
+    private Position getOptimalTarget2(DijkstraNode paths[][], int[][] enemyPaths) {
+
+        Position enemyTarget = gameMap.getEnemy().getPosition();
+        int enemyDistance = Integer.MAX_VALUE;
+        for(CodeSnippet snippet : gameMap.getCodeSnippets()) {
+
+            Position snippetPos = snippet.getPosition();
+            if(enemyPaths[snippetPos.getX()][snippetPos.getY()] < enemyDistance) {
+
+                enemyDistance = enemyPaths[snippetPos.getX()][snippetPos.getY()];
+                enemyTarget = snippetPos;
+            }
+        }
+
+        int[][] value = new int[paths.length][paths[0].length];
+
+        for(CodeSnippet snippet : gameMap.getCodeSnippets())
+            value[snippet.getPosition().getX()][snippet.getPosition().getY()] = 40;
+
+        Position result = enemyTarget;
+        int dist = Integer.MAX_VALUE;
+
+        for(int i = 0; i < paths.length; i++)
+            for(int j = 0; j < paths[0].length; j++)
+                if(paths[i][j] != null && paths[i][j].distanceFromSource - value[i][j] < dist) {
+                    result = new Position(i, j);
+                    dist = paths[i][j].distanceFromSource - value[i][j];
+                }
+
+        if(result != enemyTarget)
+            return result;
+
+        result = enemyTarget;
+        dist = Integer.MAX_VALUE;
+
+        for(int i = 0; i < paths.length; i++)
+            for(int j = 0; j < paths[0].length; j++)
+                if(!enemyTarget.equals(new Position(i, j)) && paths[i][j] != null && paths[i][j].distanceFromSource - value[i][j] < dist) {
+                    result = new Position(i, j);
+                    dist = paths[i][j].distanceFromSource - value[i][j];
+                }
+
+        return result;
+    }
 
     /**
      * Looks for the closest snippet on the map.
@@ -153,7 +206,7 @@ public class DijkstraBot extends BotAI {
             }
         }
 
-        boolean enemyIsCloser = paths[enemyTarget.getX()][enemyTarget.getY()].distanceFromSource >= enemyDistance;
+        boolean enemyIsCloser = paths[enemyTarget.getX()][enemyTarget.getY()].distanceFromSource > enemyDistance;
 
         Position result = enemyTarget;
         int distance = Integer.MAX_VALUE;

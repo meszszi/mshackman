@@ -3,6 +3,7 @@ package main.java.pl.meszszi.mshackman.bomb;
 import main.java.pl.meszszi.mshackman.*;
 import main.java.pl.meszszi.mshackman.maps.DangerMap;
 import main.java.pl.meszszi.mshackman.maps.GameMap;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 public class Bomb extends MapElement implements IDangerous{
 
@@ -22,6 +23,9 @@ public class Bomb extends MapElement implements IDangerous{
 
     @Override
     public void setDanger(DangerMap dangerMap) {
+
+        System.err.println("BOMBAXD");
+        System.err.println(timer);
 
         dangerMap.addDanger(this.position, this.timer, this.DANGER_MEASURE);
 

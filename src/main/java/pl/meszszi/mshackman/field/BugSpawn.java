@@ -28,6 +28,7 @@ public class BugSpawn extends MapElement implements IDangerous {
     public void setDanger(DangerMap dangerMap) {
 
         if(nextSpawnTime > 0)
-            dangerMap.addDanger(this.position, nextSpawnTime, Bug.DANGER_MEASURE);
+            for(int i = nextSpawnTime; i < nextSpawnTime + 2; i++)
+                dangerMap.addDanger(this.position, i, Bug.DANGER_MEASURE*2 - 10);
     }
 }

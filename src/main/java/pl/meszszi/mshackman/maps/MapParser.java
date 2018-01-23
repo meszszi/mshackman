@@ -165,7 +165,7 @@ public class MapParser {
                 if(bombIndex >= 0) {
 
                     if(field.length() > bombIndex + 1 && Character.isDigit(field.charAt(bombIndex + 1))) {
-                        int time = Character.getNumericValue(field.charAt(spawnIndex + 1));
+                        int time = Character.getNumericValue(field.charAt(bombIndex + 1));
                         bombs.add(new Bomb(map, position, time));
                     }
 
@@ -189,6 +189,7 @@ public class MapParser {
         map.setBombItems(bombItems);
         map.setCodeSnippets(codeSnippets);
         map.setBombs(bombs);
+        map.setSpawns(spawns);
     }
 
 

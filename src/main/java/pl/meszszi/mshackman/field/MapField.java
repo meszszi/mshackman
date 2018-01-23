@@ -22,6 +22,7 @@ public class MapField extends MapElement{
         super(map, position);
         this.accessible = false;
         this.validMoves = new ArrayList<>();
+        this.nonPortalMoves = new ArrayList<>();
     }
 
     public void setAsAccessible() {

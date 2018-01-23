@@ -82,12 +82,28 @@ public abstract class Bug extends MapElement implements IDangerous {
     @Override
     public void setDanger(DangerMap dangerMap) {
 
+        if(this.facingDirection == null) {
+
+            for(int i = 0; i < 5; i++) {
+                dangerMap.addDanger(position, i, this.DANGER_MEASURE * 2);
+
+                for(ValidMove validMove : map.getNonPortalMoves(this.position))
+                    dangerMap.addDanger(position.move(validMove.getMoveDirection()), i, this.DANGER_MEASURE);
+            }
+
+
+
+            return;
+        }
+
+
         MoveDirection backDirection = this.facingDirection.getOpposite();
         Position predictedPosition = this.position;
         int time = 0;
 
         while(map.getNonPortalMoves(predictedPosition).size() <= 2) {
-            dangerMap.addDanger(predictedPosition, time, this.DANGER_MEASURE);
+            dangerMap.addDanger(predictedPosition, time, this.DANGER_MEASURE * 2);
+            dangerMap.addDanger(predictedPosition, time + 1, this.DANGER_MEASURE * 2);
             MoveDirection nextDirection = null;
 
             for(ValidMove validMove : map.getNonPortalMoves(predictedPosition))
@@ -101,8 +117,16 @@ public abstract class Bug extends MapElement implements IDangerous {
 
             predictedPosition = predictedPosition.move(nextDirection);
             backDirection = nextDirection.getOpposite();
-            dangerMap.addDanger(predictedPosition, time, this.DANGER_MEASURE);
+            //dangerMap.addDanger(predictedPosition, time, this.DANGER_MEASURE);
             time ++;
         }
+
+        for(int i = time; i < time + 4; i++) {
+            dangerMap.addDanger(predictedPosition, i, this.DANGER_MEASURE * 2);
+
+            //for(ValidMove validMove : map.getNonPortalMoves(predictedPosition))
+            //    dangerMap.addDanger(predictedPosition.move(validMove.getMoveDirection()), i, this.DANGER_MEASURE);
+        }
+
     }
 }

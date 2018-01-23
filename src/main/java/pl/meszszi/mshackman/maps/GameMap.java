@@ -7,6 +7,7 @@ import main.java.pl.meszszi.mshackman.ValidMove;
 import main.java.pl.meszszi.mshackman.bomb.Bomb;
 import main.java.pl.meszszi.mshackman.bugs.Bug;
 import main.java.pl.meszszi.mshackman.engine.GameState;
+import main.java.pl.meszszi.mshackman.field.BugSpawn;
 import main.java.pl.meszszi.mshackman.field.MapField;
 import main.java.pl.meszszi.mshackman.field.Portal;
 import main.java.pl.meszszi.mshackman.items.BombItem;
@@ -24,6 +25,7 @@ public class GameMap {
 
     private final GameState gameState;
     private final MapParser mapParser;
+    private DangerMap dangerMap;
 
     private int width;
     private int height;
@@ -34,6 +36,7 @@ public class GameMap {
     private ArrayList<CodeSnippet> codeSnippets;
     private ArrayList<Bug> bugs;
     private ArrayList<Bomb> bombs;
+    private ArrayList<BugSpawn> spawns;
 
     public GameMap(GameState gameState) {
 
@@ -48,6 +51,7 @@ public class GameMap {
     public void initialize() {
         this.width = gameState.getBoardWidth();
         this.height = gameState.getBoardHeight();
+        this.dangerMap = new DangerMap(this);
 
         this.board = new MapField[width][height];
 
@@ -62,6 +66,17 @@ public class GameMap {
         this.bugs = new ArrayList<>();
         this.bombs = new ArrayList<>();
         update();
+    }
+
+
+    public DangerMap updateDanger() {
+        this.dangerMap.setAllDangerAreas();
+        return this.dangerMap;
+    }
+
+
+    public int getDanger(Position position, int time) {
+        return this.dangerMap.getDanger(position, time);
     }
 
 
@@ -101,6 +116,10 @@ public class GameMap {
         return this.bugs;
     }
 
+    public ArrayList<BugSpawn> getSpawns () {
+        return this.spawns;
+    }
+
 
     void setPlayers(ArrayList<Player> players) {
         this.players = players;
@@ -124,6 +143,9 @@ public class GameMap {
         this.bombs = bombs;
     }
 
+    void setSpawns(ArrayList<BugSpawn> spawns) {
+        this.spawns = spawns;
+    }
 
     public ArrayList<BombItem> getBombItems() {
         return bombItems;
