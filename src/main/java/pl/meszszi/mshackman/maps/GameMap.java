@@ -1,7 +1,5 @@
 package main.java.pl.meszszi.mshackman.maps;
 
-import main.java.pl.meszszi.mshackman.IValuable;
-import main.java.pl.meszszi.mshackman.MoveDirection;
 import main.java.pl.meszszi.mshackman.Position;
 import main.java.pl.meszszi.mshackman.ValidMove;
 import main.java.pl.meszszi.mshackman.bomb.Bomb;
@@ -9,13 +7,11 @@ import main.java.pl.meszszi.mshackman.bugs.Bug;
 import main.java.pl.meszszi.mshackman.engine.GameState;
 import main.java.pl.meszszi.mshackman.field.BugSpawn;
 import main.java.pl.meszszi.mshackman.field.MapField;
-import main.java.pl.meszszi.mshackman.field.Portal;
 import main.java.pl.meszszi.mshackman.items.BombItem;
 import main.java.pl.meszszi.mshackman.items.CodeSnippet;
 import main.java.pl.meszszi.mshackman.players.Player;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 /**
  * Class used for storing information about all objects on the game field
@@ -30,7 +26,7 @@ public class GameMap {
     private int width;
     private int height;
 
-    private MapField[][] board; // Array representing game walls -> 0 stands for empty (accessible) field, 1 represents wall.
+    private MapField[][] board;
     private ArrayList<Player> players;
     private ArrayList<BombItem> bombItems;
     private ArrayList<CodeSnippet> codeSnippets;
@@ -49,10 +45,10 @@ public class GameMap {
      * Initializes data about game field.
      */
     public void initialize() {
+
         this.width = gameState.getBoardWidth();
         this.height = gameState.getBoardHeight();
         this.dangerMap = new DangerMap(this);
-
         this.board = new MapField[width][height];
 
         for(int i = 0; i < width * height; i++)
@@ -69,14 +65,24 @@ public class GameMap {
     }
 
 
+    /**
+     * Updates danger areas on this.dangerMap
+     * @return - updated dangerMap
+     */
     public DangerMap updateDanger() {
-        this.dangerMap.setAllDangerAreas();
-        return this.dangerMap;
+        dangerMap.setAllDangerAreas();
+        return dangerMap;
     }
 
 
+    /**
+     * Retrieves danger measure from the field.
+     * @param position - position to look up
+     * @param time - time to check danger at
+     * @return - danger measure specified by given parameters
+     */
     public int getDanger(Position position, int time) {
-        return this.dangerMap.getDanger(position, time);
+        return dangerMap.getDanger(position, time);
     }
 
 
@@ -87,33 +93,55 @@ public class GameMap {
         mapParser.updateMapObjects(gameState.getBoardUpdate());
     }
 
+
+    /**
+     * Getter for width
+     * @return - this.width
+     */
     int getWidth() {
         return this.width;
     }
 
+
+    /**
+     * Getter for height
+     * @return - this.height
+     */
     int getHeight() {
         return this.height;
     }
 
+
+    /**
+     * Getter for board.
+     * @return - this.board
+     */
     MapField[][] getBoard() {
         return this.board;
     }
 
-    /**
-     * Getter for players.
-     * @return this.players.
-     */
+
+
+    // Getters for objects on the map.
+
     public ArrayList<Player> getPlayers() {
         return this.players;
     }
 
-
-    /**
-     * Getter for bugs.
-     * @return this.bugs.
-     */
     public ArrayList<Bug> getBugs() {
         return this.bugs;
+    }
+
+    public ArrayList<BombItem> getBombItems() {
+        return bombItems;
+    }
+
+    public ArrayList<CodeSnippet> getCodeSnippets() {
+        return codeSnippets;
+    }
+
+    public ArrayList<Bomb> getBombs() {
+        return bombs;
     }
 
     public ArrayList<BugSpawn> getSpawns () {
@@ -121,15 +149,16 @@ public class GameMap {
     }
 
 
+
+    // Setters for objects on the map.
+
     void setPlayers(ArrayList<Player> players) {
         this.players = players;
     }
 
-
     void setBugs(ArrayList<Bug> bugs) {
         this.bugs = bugs;
     }
-
 
     void setBombItems(ArrayList<BombItem> bombItems) {
         this.bombItems = bombItems;
@@ -147,32 +176,27 @@ public class GameMap {
         this.spawns = spawns;
     }
 
-    public ArrayList<BombItem> getBombItems() {
-        return bombItems;
-    }
 
-    public ArrayList<CodeSnippet> getCodeSnippets() {
-        return codeSnippets;
-    }
 
     /**
-     * Creates array of all valid moves that can be made from given position.
-     * @param position - starting position
-     * @return array of moves from position that do not collide with any wall.
+     * Retrieves all valid moves that players can make while stanging on given field.
+     * @param position - position of a player
+     * @return - list of validMoves
      */
     public ArrayList<ValidMove> getValidMoves(Position position) {
         return board[position.getX()][position.getY()].getValidMoves();
     }
 
 
+    /**
+     * Retrieves all valid moves that can be made by non-player type objects (moves not using portals).
+     * @param position - position of the object
+     * @return - list of validMoves
+     */
     public ArrayList<ValidMove> getNonPortalMoves(Position position) {
         return board[position.getX()][position.getY()].getNonPortalMoves();
     }
 
-
-    public ArrayList<Bomb> getBombs() {
-        return bombs;
-    }
 
     /**
      * Retrieves Hero player from players list.
@@ -210,6 +234,11 @@ public class GameMap {
     }
 
 
+    /**
+     * Checks if given position is accessible on the board.
+     * @param position - position to check
+     * @return true only if given position is accessible
+     */
     public boolean isAccessible(Position position) {
         return isInsideMap(position) && board[position.getX()][position.getY()].isAccessible();
     }

@@ -4,7 +4,7 @@ import main.java.pl.meszszi.mshackman.Position;
 import main.java.pl.meszszi.mshackman.maps.GameMap;
 
 /**
- * Class that will represent our opponent.
+ * Class that represents our opponent.
  */
 
 public class Enemy extends Player {

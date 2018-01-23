@@ -39,6 +39,7 @@ public class GameState {
     }
 
 
+    // Setters for non-changing values
     void setMaxTimebank(int value) {
         this.MAX_TIMEBANK = value;
     }
@@ -61,6 +62,7 @@ public class GameState {
 
 
 
+    // Setters for round specific values
     void setCurrentRound(int currentRound) {
         this.currentRound = currentRound;
     }
@@ -71,11 +73,10 @@ public class GameState {
 
     void setBoardUpdate(String boardUpdate) {
         this.boardUpdate = boardUpdate.split(",");
-        int xd = this.boardUpdate.length;
     }
 
 
-
+    // Setters for hero related values
     void setHeroSnippetCount(int heroSnippetCount) {
         this.heroSnippetCount = heroSnippetCount;
     }
@@ -93,7 +94,7 @@ public class GameState {
     }
 
 
-
+    // Setters for enemy related values
     void setEnemySnippetCount(int enemySnippetCount) {
         this.enemySnippetCount = enemySnippetCount;
     }
@@ -111,8 +112,7 @@ public class GameState {
     }
 
 
-
-
+    // Getters for non-changing values
     public int getMaxTimebank() {
         return this.MAX_TIMEBANK;
     }
@@ -133,6 +133,8 @@ public class GameState {
         return BOARD_HEIGHT;
     }
 
+
+    // Getters for round specific values.
     public int getCurrentRound() {
         return this.currentRound;
     }
@@ -145,6 +147,8 @@ public class GameState {
         return this.boardUpdate;
     }
 
+
+    // Getters for hero related values.
     public int getHeroSnippetCount() {
         return heroSnippetCount;
     }
@@ -162,7 +166,7 @@ public class GameState {
     }
 
 
-
+    // Getters for enemy related values
     public int getEnemySnippetCount() {
         return enemySnippetCount;
     }

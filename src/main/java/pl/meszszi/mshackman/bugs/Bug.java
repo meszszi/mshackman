@@ -33,6 +33,10 @@ public abstract class Bug extends MapElement implements IDangerous {
     }
 
 
+    /**
+     * Getter for facingDirection.
+     * @return this.facingDirection
+     */
     public MoveDirection getFacingDirection() {
         return facingDirection;
     }
@@ -64,14 +68,15 @@ public abstract class Bug extends MapElement implements IDangerous {
 
         ArrayList<MoveDirection> optimalMoves = new ArrayList<>();
 
-        //TODO
+        // TODO
+        // this feature is not used yet, but may be useful in future versions of BotAIs
 
         return optimalMoves;
     }
 
 
     /**
-     * Setter for facingDirection
+     * Setter for facingDirection.
      * @param facingDirection - new facingDirection
      */
     public void setFacingDirection(MoveDirection facingDirection) {
@@ -79,19 +84,22 @@ public abstract class Bug extends MapElement implements IDangerous {
     }
 
 
+    /**
+     * Predicts where the bug will go (as long as there is only one choice) and sets danger areas.
+     * @param dangerMap - DangerMap to set danger areas on.
+     */
     @Override
     public void setDanger(DangerMap dangerMap) {
 
+        // Sets danger around the bug for few next 5 rounds if its facingDirection is not determined.
         if(this.facingDirection == null) {
 
             for(int i = 0; i < 5; i++) {
-                dangerMap.addDanger(position, i, this.DANGER_MEASURE * 2);
+                dangerMap.addDanger(position, i, DANGER_MEASURE * 2);
 
                 for(ValidMove validMove : map.getNonPortalMoves(this.position))
-                    dangerMap.addDanger(position.move(validMove.getMoveDirection()), i, this.DANGER_MEASURE);
+                    dangerMap.addDanger(position.move(validMove.getMoveDirection()), i, DANGER_MEASURE);
             }
-
-
 
             return;
         }
@@ -101,9 +109,11 @@ public abstract class Bug extends MapElement implements IDangerous {
         Position predictedPosition = this.position;
         int time = 0;
 
+        // Finds bug's future path and sets proper danger and time in dangerMap
         while(map.getNonPortalMoves(predictedPosition).size() <= 2) {
-            dangerMap.addDanger(predictedPosition, time, this.DANGER_MEASURE * 2);
-            dangerMap.addDanger(predictedPosition, time + 1, this.DANGER_MEASURE * 2);
+
+            dangerMap.addDanger(predictedPosition, time, DANGER_MEASURE * 2);
+            dangerMap.addDanger(predictedPosition, time + 1, DANGER_MEASURE * 2);
             MoveDirection nextDirection = null;
 
             for(ValidMove validMove : map.getNonPortalMoves(predictedPosition))
@@ -112,21 +122,18 @@ public abstract class Bug extends MapElement implements IDangerous {
                     break;
                 }
 
+
             if(nextDirection == null)
                 break;
 
             predictedPosition = predictedPosition.move(nextDirection);
             backDirection = nextDirection.getOpposite();
-            //dangerMap.addDanger(predictedPosition, time, this.DANGER_MEASURE);
             time ++;
         }
 
+        // Sets additional danger for 4 rounds on the spot where bug's next move is yet unknown
         for(int i = time; i < time + 4; i++) {
-            dangerMap.addDanger(predictedPosition, i, this.DANGER_MEASURE * 2);
-
-            //for(ValidMove validMove : map.getNonPortalMoves(predictedPosition))
-            //    dangerMap.addDanger(predictedPosition.move(validMove.getMoveDirection()), i, this.DANGER_MEASURE);
+            dangerMap.addDanger(predictedPosition, i, DANGER_MEASURE * 2);
         }
-
     }
 }

@@ -43,8 +43,8 @@ public class Player extends MapElement{
 
 
     /**
-     * Setter for facingDirection
-     * @param facingDirection
+     * Setter for facingDirection.
+     * @param facingDirection - direction to set
      */
     public void setFacingDirection(MoveDirection facingDirection) {
         this.facingDirection = facingDirection;

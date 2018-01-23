@@ -7,5 +7,5 @@ import main.java.pl.meszszi.mshackman.maps.DangerMap;
  */
 
 public interface IDangerous {
-    public void setDanger(DangerMap dangerMap);
+    void setDanger(DangerMap dangerMap);
 }

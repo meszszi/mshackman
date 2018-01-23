@@ -24,9 +24,15 @@ public class BugSpawn extends MapElement implements IDangerous {
         this.nextSpawnTime = nextSpawnTime;
     }
 
+
+    /**
+     * Sets proper danger areas on DangerMap.
+     * @param dangerMap - DangerMap to set danger areas on
+     */
     @Override
     public void setDanger(DangerMap dangerMap) {
 
+        // Sets danger for 2 rounds after bug spawn.
         if(nextSpawnTime > 0)
             for(int i = nextSpawnTime; i < nextSpawnTime + 2; i++)
                 dangerMap.addDanger(this.position, i, Bug.DANGER_MEASURE*2 - 10);

@@ -19,7 +19,7 @@ public class BugChase extends Bug{
 
     /**
      * Gets potential target according to bug's AI.
-     * @return Position that most likely be the bug's next target.
+     * @return Position that will most likely be the bug's next target.
      */
     @Override
     public Position obtainTarget() {

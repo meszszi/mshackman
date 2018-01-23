@@ -5,9 +5,13 @@ import main.java.pl.meszszi.mshackman.maps.DangerMap;
 import main.java.pl.meszszi.mshackman.maps.GameMap;
 import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
+/**
+ * Class that represents ticking bombs on the board.
+ */
+
 public class Bomb extends MapElement implements IDangerous{
 
-    public final static int DANGER_MEASURE = 40;
+    private final static int DANGER_MEASURE = 40;
 
     private final int timer;
 
@@ -17,15 +21,12 @@ public class Bomb extends MapElement implements IDangerous{
     }
 
 
-    public int getTimer() {
-        return this.timer;
-    }
-
+    /**
+     * Sets danger areas on DangerMap.
+     * @param dangerMap - DangerMap to set danger areas on.
+     */
     @Override
     public void setDanger(DangerMap dangerMap) {
-
-        System.err.println("BOMBAXD");
-        System.err.println(timer);
 
         dangerMap.addDanger(this.position, this.timer, this.DANGER_MEASURE);
 

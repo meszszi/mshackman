@@ -16,7 +16,7 @@ public class MapField extends MapElement{
 
     private boolean accessible;
     private ArrayList<ValidMove> validMoves;
-    private ArrayList<ValidMove> nonPortalMoves;    // all valid moves for objects, that cannot go through portals
+    private ArrayList<ValidMove> nonPortalMoves;    // all valid moves for objects that cannot go through portals
 
     public MapField(GameMap map, Position position) {
         super(map, position);
@@ -25,13 +25,17 @@ public class MapField extends MapElement{
         this.nonPortalMoves = new ArrayList<>();
     }
 
+
+    /**
+     * Sets isAccessible field to true.
+     */
     public void setAsAccessible() {
         this.accessible = true;
     }
 
 
     /**
-     * Checks if the field can be accessed by any character (player or bug).
+     * Checks if the field can be accessed by any character (player, bug or a bomb blast).
      * @return this.accessible
      */
     public boolean isAccessible() {
@@ -39,26 +43,7 @@ public class MapField extends MapElement{
     }
 
 
-    /**
-     * Gets all fields that can be accessed directly from this (assumes that this one is by definition accessible).
-     * @return list of adjacent accessible MapFields.
-     */
-    public ArrayList<MapField> getAdjacentFields() {
-        ArrayList<MapField> adjacent = new ArrayList<>();
-
-        for(MoveDirection direction : MoveDirection.values()) {
-            Position adjPosition = this.position.move(direction);
-            //MapField field = this.map.getField(adjPosition);
-
-            //if(field == null || !field.isAccessible())  // Skips the loop iteration if the field is outside the map or is inaccessible.
-            //    continue;
-
-        }
-
-        return adjacent;
-    }
-
-
+    // Functions that extend validMoves lists of both types (regular and nonPortal)
     public void extendValidMoves(ValidMove move) {
         this.validMoves.add(move);
     }
@@ -67,7 +52,7 @@ public class MapField extends MapElement{
     }
 
 
-
+    // Getters for validMoves lists.
     public ArrayList<ValidMove> getValidMoves() {
         return validMoves;
     }

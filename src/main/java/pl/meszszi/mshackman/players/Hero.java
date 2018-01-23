@@ -4,7 +4,7 @@ import main.java.pl.meszszi.mshackman.Position;
 import main.java.pl.meszszi.mshackman.maps.GameMap;
 
 /**
- * Class that will represent our player
+ * Class that represents our player
  */
 
 public class Hero extends Player {

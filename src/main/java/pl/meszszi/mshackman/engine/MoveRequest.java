@@ -3,7 +3,7 @@ package main.java.pl.meszszi.mshackman.engine;
 import main.java.pl.meszszi.mshackman.MoveDirection;
 
 /**
- * Class used to represent moves that out bot wants to make.
+ * Class used to represent moves that bot wants to make.
  */
 
 public class MoveRequest {
@@ -39,6 +39,10 @@ public class MoveRequest {
     }
 
 
+    /**
+     * Converts move request to string accepted by the game engine.
+     * @return - properly formatted move string
+     */
     @Override
     public String toString() {
         String moveRequest = "pass";
@@ -47,7 +51,7 @@ public class MoveRequest {
             moveRequest = moveDirection.toString();
 
         if(bombTimer != 0) {
-            moveRequest.concat(String.format(";drop_bomb %d", bombTimer));
+            moveRequest += (String.format(";drop_bomb %d", bombTimer));
             bombTimer = 0;
         }
 

@@ -8,7 +8,7 @@ import main.java.pl.meszszi.mshackman.botAI.*;
 
 public class Main {
     public static void main(String[] args) {
-        BotAI random = new DijkstraBot2("bixie");
-        random.run();
+        BotAI bot = new DijkstraBot2("bixie");
+        bot.run();
     }
 }

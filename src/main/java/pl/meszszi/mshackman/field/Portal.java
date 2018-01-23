@@ -22,14 +22,28 @@ public class Portal extends MapElement {
     }
 
 
+    /**
+     * Setter for matchingPortal
+     * @param matchingPortal - Portal object that is connected with this.
+     */
     public void setMatchingPortal(Portal matchingPortal) {
         this.matchingPortal = matchingPortal;
     }
 
+
+    /**
+     * Getter for matching portal.
+     * @return - this.matchingPortal
+     */
     public Portal getMatchingPortal() {
         return matchingPortal;
     }
 
+
+    /**
+     * Getter for portalDirection;
+     * @return - this.portalDirection
+     */
     public MoveDirection getPortalDirection() {
         return portalDirection;
     }

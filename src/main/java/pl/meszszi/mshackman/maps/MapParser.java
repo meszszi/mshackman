@@ -1,6 +1,5 @@
 package main.java.pl.meszszi.mshackman.maps;
 
-import main.java.pl.meszszi.mshackman.IValuable;
 import main.java.pl.meszszi.mshackman.MoveDirection;
 import main.java.pl.meszszi.mshackman.Position;
 import main.java.pl.meszszi.mshackman.ValidMove;
@@ -47,6 +46,7 @@ public class MapParser {
             return;
         }
 
+        // Searches for portals on the map.
         for(int i = 0; i < boardRepresentation.length; i++) {
 
             if(!boardRepresentation[i].equals("x"))
@@ -65,7 +65,7 @@ public class MapParser {
         portals.get(0).setMatchingPortal(portals.get(1));
         portals.get(1).setMatchingPortal(portals.get(0));
 
-        // Sets all validMoves for fields on the board.
+        // Sets all validMoves for all fields on the board.
         for(int i = 0; i < board.length; i++)
             for(int j = 0; j < board[i].length; j++)
                 if(board[i][j].isAccessible())
@@ -84,7 +84,7 @@ public class MapParser {
                         }
                     }
 
-        // Sets additional portal moves.
+        // Sets additional portal moves for regular validMoves lists of each field.
         for(Portal portal : portals)
             board[portal.getPosition().getX()][portal.getPosition().getY()].extendValidMoves(
                     new ValidMove(portal.getMatchingPortal().getPosition(), portal.getPortalDirection()));
@@ -92,7 +92,7 @@ public class MapParser {
 
 
     /**
-     * Updates all lists of movable objects present on gameMap (players, items and bugs).
+     * Updates all changeable objects present on gameMap (players, items, bugs and bug spawns).
      * @param boardRepresentation - String array, each element containing info about single field.
      */
     void updateMapObjects(String[] boardRepresentation) {
@@ -181,9 +181,11 @@ public class MapParser {
             }
         }
 
+        // Updates facingDirections for players and bugs.
         updateBugsInfo(bugs);
         updatePlayersInfo(players);
 
+        // Saves updates lists to gameMap.
         map.setPlayers(players);
         map.setBugs(bugs);
         map.setBombItems(bombItems);

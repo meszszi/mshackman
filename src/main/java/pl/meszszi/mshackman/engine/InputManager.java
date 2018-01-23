@@ -127,7 +127,7 @@ public class InputManager {
 
 
     /**
-     * Parse data about the game given by the engine
+     * Parses data about the game given by the engine
      * @param key Type of game data given
      * @param value Value
      */
@@ -158,7 +158,7 @@ public class InputManager {
 
 
     /**
-     * Parse data about given player that the engine has sent
+     * Parses data about given player given by the engine.
      * @param playerName Player name that this data is about
      * @param key Type of player data given
      * @param value Value
@@ -199,7 +199,6 @@ public class InputManager {
                                 "Cannot parse %s data input with key '%s'", playerName, key));
                 }
             }
-
         }
         catch (Exception e) {
 
