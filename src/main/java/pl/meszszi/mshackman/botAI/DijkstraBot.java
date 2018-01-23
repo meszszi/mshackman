@@ -24,24 +24,6 @@ public class DijkstraBot extends BotAI {
     }
 
 
-    /**
-     * Nested class for algorithm purposes.
-     */
-    private class DijkstraNode {
-
-        final Position position;
-        final Position source;
-        final MoveDirection directionFromSource;
-        final int distanceFromSource;
-
-        DijkstraNode(Position position, Position source, MoveDirection directionFromSource, int distanceFromSource) {
-            this.distanceFromSource = distanceFromSource;
-            this.source = source;
-            this.position = position;
-            this.directionFromSource = directionFromSource;
-        }
-    }
-
     @Override
     protected MoveRequest getNextMove() {
 
@@ -52,7 +34,7 @@ public class DijkstraBot extends BotAI {
         Position heroPos = gameMap.getHero().getPosition();
         Position enemyPos = gameMap.getEnemy().getPosition();
 
-        DijkstraNode paths[][] = setPaths(heroPos);
+        GraphNode paths[][] = setPaths(heroPos);
         int enemyPaths[][] = getEnemyPaths(enemyPos);
 
         Position target = getOptimalTarget(paths, enemyPaths);
@@ -67,13 +49,13 @@ public class DijkstraBot extends BotAI {
      * Sets distances from current hero's position by applying dijkstra's algorithm to current board.
      * @return array of distances
      */
-    private DijkstraNode[][] setPaths(Position source) {
+    GraphNode[][] setPaths(Position source) {
 
         int width = this.gameState.getBoardWidth();
         int height = this.gameState.getBoardHeight();
         int weights[][] = new int[width][height];
 
-        DijkstraNode paths[][] = new DijkstraNode[width][height];
+        GraphNode paths[][] = new GraphNode[width][height];
 
         // Initializes weights.
         for(int i = 0; i < width * height; i++)
@@ -97,20 +79,20 @@ public class DijkstraBot extends BotAI {
         }
 
         // Comparator for priority queue.
-        Comparator<DijkstraNode> comparator = new Comparator<DijkstraNode>() {
+        Comparator<GraphNode> comparator = new Comparator<GraphNode>() {
             @Override
-            public int compare(DijkstraNode node1, DijkstraNode node2) {
+            public int compare(GraphNode node1, GraphNode node2) {
                 return node1.distanceFromSource - node2.distanceFromSource;
             }
         };
 
-        PriorityQueue<DijkstraNode> queue = new PriorityQueue<>(comparator);
-        queue.add(new DijkstraNode(source, source, null, 0));
+        PriorityQueue<GraphNode> queue = new PriorityQueue<>(comparator);
+        queue.add(new GraphNode(source, source, null, 0));
 
         // Actual algorithm is done here.
         while(queue.size() > 0) {
 
-            DijkstraNode node = queue.remove();
+            GraphNode node = queue.remove();
             Position position = node.position;
 
             if(paths[position.getX()][position.getY()] != null)
@@ -121,7 +103,7 @@ public class DijkstraBot extends BotAI {
             for(ValidMove move : gameMap.getValidMoves(position)) {
 
                 Position target = move.getTarget();
-                queue.add(new DijkstraNode(
+                queue.add(new GraphNode(
                         target,
                         position,
                         move.getMoveDirection(),
@@ -139,7 +121,7 @@ public class DijkstraBot extends BotAI {
      * @param paths - array of graph nodes
      * @return position of the closest snippet.
      */
-    private Position getOptimalTarget(DijkstraNode paths[][], int[][] enemyPaths) {
+    Position getOptimalTarget(GraphNode paths[][], int[][] enemyPaths) {
 
         Position enemyTarget = gameMap.getEnemy().getPosition();
         int enemyDistance = Integer.MAX_VALUE;
@@ -153,7 +135,7 @@ public class DijkstraBot extends BotAI {
             }
         }
 
-        boolean enemyIsCloser = paths[enemyTarget.getX()][enemyTarget.getY()].distanceFromSource >= enemyDistance;
+        boolean enemyIsCloser = paths[enemyTarget.getX()][enemyTarget.getY()].distanceFromSource > enemyDistance;
 
         Position result = enemyTarget;
         int distance = Integer.MAX_VALUE;
@@ -161,7 +143,8 @@ public class DijkstraBot extends BotAI {
         for(CodeSnippet snippet : gameMap.getCodeSnippets()) {
 
             Position snippetPos = snippet.getPosition();
-            if(paths[snippetPos.getX()][snippetPos.getY()].distanceFromSource < distance && !(snippetPos.equals(enemyTarget) && enemyIsCloser)) {
+            if(paths[snippetPos.getX()][snippetPos.getY()].distanceFromSource < distance
+                    && !(snippetPos.equals(enemyTarget) && enemyIsCloser)) {
 
                 distance = paths[snippetPos.getX()][snippetPos.getY()].distanceFromSource;
                 result = snippetPos;
@@ -179,7 +162,7 @@ public class DijkstraBot extends BotAI {
      * @param target - target position
      * @return proper MoveDirection.
      */
-    private MoveDirection getDirectionTowardsTarget(DijkstraNode paths[][], Position source, Position target) {
+    MoveDirection getDirectionTowardsTarget(GraphNode paths[][], Position source, Position target) {
 
         if(target == null || source.equals(target))
             return null;
@@ -198,7 +181,7 @@ public class DijkstraBot extends BotAI {
      * @param source - starting position
      * @return - int array representing distances from source.
      */
-    private int[][] getEnemyPaths(Position source) {
+    int[][] getEnemyPaths(Position source) {
 
         int width = this.gameState.getBoardWidth();
         int height = this.gameState.getBoardHeight();

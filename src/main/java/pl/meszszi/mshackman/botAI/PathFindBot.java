@@ -2,17 +2,16 @@ package main.java.pl.meszszi.mshackman.botAI;
 
 import main.java.pl.meszszi.mshackman.MoveDirection;
 import main.java.pl.meszszi.mshackman.Position;
-import main.java.pl.meszszi.mshackman.ValidMove;
-import main.java.pl.meszszi.mshackman.bugs.Bug;
 import main.java.pl.meszszi.mshackman.engine.MoveRequest;
-import main.java.pl.meszszi.mshackman.items.CodeSnippet;
 
-import java.util.LinkedList;
-import java.util.Queue;
+public abstract class PathFindBot extends BotAI {
 
-public abstract class BasicPathFindBot extends BotAI {
 
-    public BasicPathFindBot(String botName) {
+    /**
+     * Class representing node in basic BFS path finding
+     * @param botName
+     */
+    PathFindBot(String botName) {
         super(botName);
     }
 
@@ -22,19 +21,19 @@ public abstract class BasicPathFindBot extends BotAI {
      * @param distances - array of distances from hero's position
      * @return position of the closest snippet
      */
-    protected abstract Position getTargetPosition(GraphField distances[][]);
+    protected abstract Position getTargetPosition(GraphNode distances[][]);
 
 
     /**
      * Executes path finding algorithm on game board and sets distances from hero to every accessible field on the map
      */
-    protected abstract GraphField[][] setDistances();
+    protected abstract GraphNode[][] setDistances();
 
 
     @Override
     public MoveRequest getNextMove() {
 
-        GraphField distances[][] = setDistances();
+        GraphNode distances[][] = setDistances();
 
         System.err.println(String.format("round: %d", gameState.getCurrentRound()));
 
@@ -52,8 +51,6 @@ public abstract class BasicPathFindBot extends BotAI {
     }
 
 
-
-
     /**
      * Calculates optimal move in which player must move to get closer to its target point.
      * @param distances - int array with set distances from hero's current position
@@ -61,13 +58,13 @@ public abstract class BasicPathFindBot extends BotAI {
      * @param target - position that hero wants to reach
      * @return optimal MoveDirection.
      */
-    private MoveDirection getDirectionToTarget(GraphField distances[][], Position start, Position target) {
+    private MoveDirection getDirectionToTarget(GraphNode distances[][], Position start, Position target) {
 
-        GraphField field = distances[target.getX()][target.getY()];
+        GraphNode field = distances[target.getX()][target.getY()];
 
-        while(field.getPreviousPosition() != start)
-            field = distances[field.getPreviousPosition().getX()][field.getPreviousPosition().getY()];
+        while(field.source != start)
+            field = distances[field.source.getX()][field.source.getY()];
 
-        return field.getDirectionFromSource();
+        return field.directionFromSource;
     }
 }
