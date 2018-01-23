@@ -73,8 +73,6 @@ public class BasicBFSBot extends BasicPathFindBot{
     }
 
 
-
-
     /**
      * Gets the position of the closest CodeSnippet to hero.
      * @param distances - array of distances from hero's position

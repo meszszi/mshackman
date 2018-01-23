@@ -5,6 +5,10 @@ import main.java.pl.meszszi.mshackman.engine.MoveRequest;
 
 import java.util.Random;
 
+/**
+ * Bot that makes random moves.
+ */
+
 public class RandomBot extends BotAI {
 
     private Random random;

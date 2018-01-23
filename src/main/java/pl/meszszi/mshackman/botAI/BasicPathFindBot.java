@@ -16,6 +16,7 @@ public abstract class BasicPathFindBot extends BotAI {
         super(botName);
     }
 
+
     /**
      * Gets the position of the closest CodeSnippet to hero.
      * @param distances - array of distances from hero's position
@@ -23,24 +24,19 @@ public abstract class BasicPathFindBot extends BotAI {
      */
     protected abstract Position getTargetPosition(GraphField distances[][]);
 
+
     /**
      * Executes path finding algorithm on game board and sets distances from hero to every accessible field on the map
      */
     protected abstract GraphField[][] setDistances();
 
 
+    @Override
     public MoveRequest getNextMove() {
 
         GraphField distances[][] = setDistances();
 
         System.err.println(String.format("round: %d", gameState.getCurrentRound()));
-
-        /*for(int i = 0; i < distances[0].length; i++) {
-            for(int j = 0; j < distances.length; j++) {
-                System.err.print(String.format("%d,\t", distances[j][i].getDistanceFromSource()));
-            }
-            System.err.print("\n");
-        }*/
 
         Position target = getTargetPosition(distances);
 
@@ -74,7 +70,4 @@ public abstract class BasicPathFindBot extends BotAI {
 
         return field.getDirectionFromSource();
     }
-
-
-
 }

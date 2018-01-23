@@ -9,11 +9,11 @@ import main.java.pl.meszszi.mshackman.maps.GameMap;
 
 public abstract class BotAI {
 
-    protected final String botName;
-    protected final GameState gameState;
-    protected final GameMap gameMap;
-    protected final InputManager input;
-    protected final OutputManager output;
+    final String botName;
+    final GameState gameState;
+    final GameMap gameMap;
+    final InputManager input;
+    final OutputManager output;
 
     public BotAI(String botName) {
         this.botName = botName;

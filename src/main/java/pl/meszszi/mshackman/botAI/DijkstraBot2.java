@@ -14,6 +14,7 @@ import java.util.Queue;
 
 /**
  * Class implementing Dijkstra's path finding algorithm (bot doesn't get confused when surrounded by bugs).
+ * Tries to predict fev next moves of bugs.
  */
 
 public class DijkstraBot2 extends BotAI {
@@ -24,7 +25,7 @@ public class DijkstraBot2 extends BotAI {
 
 
     /**
-     * Nested class for algorithm purposes.
+     * Dijkstra node class for algorithm purposes.
      */
     private class DijkstraNode {
 
@@ -46,9 +47,7 @@ public class DijkstraBot2 extends BotAI {
     @Override
     protected MoveRequest getNextMove() {
 
-        //System.err.println(gameState.getCurrentRound());
-        System.err.println(gameMap.updateDanger());
-        //System.err.println("\n");
+        gameMap.updateDanger();
 
         Position heroPos = gameMap.getHero().getPosition();
         Position enemyPos = gameMap.getEnemy().getPosition();
@@ -72,31 +71,9 @@ public class DijkstraBot2 extends BotAI {
 
         int width = this.gameState.getBoardWidth();
         int height = this.gameState.getBoardHeight();
-        int weights[][] = new int[width][height];
 
         DijkstraNode paths[][] = new DijkstraNode[width][height];
-/*
-        // Initializes weights.
-        for(int i = 0; i < width * height; i++)
-            weights[i % width][i / width] = 1;
 
-        // Gives weight of 40 to every field covered by a Bug.
-        for(Bug bug : this.gameMap.getBugs()) {
-
-            Position bugPos = bug.getPosition();
-            weights[bugPos.getX()][bugPos.getY()] += 40;
-
-            for(MoveDirection direction : MoveDirection.values()) {
-                if(bug.getFacingDirection() == null || direction != bug.getFacingDirection().getOpposite()) {
-
-                    Position nextToBug = bugPos.move(direction);
-
-                    if(gameMap.isInsideMap(nextToBug))
-                        weights[nextToBug.getX()][nextToBug.getY()] += 40;
-                }
-            }
-        }
-*/
         // Comparator for priority queue.
         Comparator<DijkstraNode> comparator = new Comparator<DijkstraNode>() {
             @Override
@@ -136,56 +113,6 @@ public class DijkstraBot2 extends BotAI {
         return paths;
     }
 
-
-    /**
-     * Looks for the closest snippet on the map.
-     * @param paths - array of graph nodes
-     * @return position of the closest snippet.
-     */
-    private Position getOptimalTarget2(DijkstraNode paths[][], int[][] enemyPaths) {
-
-        Position enemyTarget = gameMap.getEnemy().getPosition();
-        int enemyDistance = Integer.MAX_VALUE;
-        for(CodeSnippet snippet : gameMap.getCodeSnippets()) {
-
-            Position snippetPos = snippet.getPosition();
-            if(enemyPaths[snippetPos.getX()][snippetPos.getY()] < enemyDistance) {
-
-                enemyDistance = enemyPaths[snippetPos.getX()][snippetPos.getY()];
-                enemyTarget = snippetPos;
-            }
-        }
-
-        int[][] value = new int[paths.length][paths[0].length];
-
-        for(CodeSnippet snippet : gameMap.getCodeSnippets())
-            value[snippet.getPosition().getX()][snippet.getPosition().getY()] = 40;
-
-        Position result = enemyTarget;
-        int dist = Integer.MAX_VALUE;
-
-        for(int i = 0; i < paths.length; i++)
-            for(int j = 0; j < paths[0].length; j++)
-                if(paths[i][j] != null && paths[i][j].distanceFromSource - value[i][j] < dist) {
-                    result = new Position(i, j);
-                    dist = paths[i][j].distanceFromSource - value[i][j];
-                }
-
-        if(result != enemyTarget)
-            return result;
-
-        result = enemyTarget;
-        dist = Integer.MAX_VALUE;
-
-        for(int i = 0; i < paths.length; i++)
-            for(int j = 0; j < paths[0].length; j++)
-                if(!enemyTarget.equals(new Position(i, j)) && paths[i][j] != null && paths[i][j].distanceFromSource - value[i][j] < dist) {
-                    result = new Position(i, j);
-                    dist = paths[i][j].distanceFromSource - value[i][j];
-                }
-
-        return result;
-    }
 
     /**
      * Looks for the closest snippet on the map.
