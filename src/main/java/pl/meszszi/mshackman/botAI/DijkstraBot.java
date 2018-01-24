@@ -1,11 +1,9 @@
 package main.java.pl.meszszi.mshackman.botAI;
 
-import com.sun.org.apache.bcel.internal.classfile.Code;
 import main.java.pl.meszszi.mshackman.MoveDirection;
 import main.java.pl.meszszi.mshackman.Position;
 import main.java.pl.meszszi.mshackman.ValidMove;
 import main.java.pl.meszszi.mshackman.bugs.Bug;
-import main.java.pl.meszszi.mshackman.engine.MoveRequest;
 import main.java.pl.meszszi.mshackman.items.CodeSnippet;
 
 import java.util.Comparator;
@@ -17,31 +15,10 @@ import java.util.Queue;
  * Class implementing Dijkstra's path finding algorithm (bot doesn't get confused when surrounded by bugs).
  */
 
-public class DijkstraBot extends BotAI {
+public class DijkstraBot extends PathFindBot {
 
     public DijkstraBot(String name) {
         super(name);
-    }
-
-
-    @Override
-    protected MoveRequest getNextMove() {
-
-        System.err.println(gameState.getCurrentRound());
-        System.err.println(gameMap.updateDanger());
-        System.err.println("\n");
-
-        Position heroPos = gameMap.getHero().getPosition();
-        Position enemyPos = gameMap.getEnemy().getPosition();
-
-        GraphNode paths[][] = setPaths(heroPos);
-        int enemyPaths[][] = getEnemyPaths(enemyPos);
-
-        Position target = getOptimalTarget(paths, enemyPaths);
-
-        MoveDirection direction = getDirectionTowardsTarget(paths, heroPos, target);
-
-        return new MoveRequest(direction);
     }
 
 
@@ -49,7 +26,10 @@ public class DijkstraBot extends BotAI {
      * Sets distances from current hero's position by applying dijkstra's algorithm to current board.
      * @return array of distances
      */
-    GraphNode[][] setPaths(Position source) {
+    @Override
+    GraphNode[][] setPaths() {
+
+        Position source = gameMap.getHero().getPosition();
 
         int width = this.gameState.getBoardWidth();
         int height = this.gameState.getBoardHeight();
@@ -121,7 +101,10 @@ public class DijkstraBot extends BotAI {
      * @param paths - array of graph nodes
      * @return position of the closest snippet.
      */
-    Position getOptimalTarget(GraphNode paths[][], int[][] enemyPaths) {
+    @Override
+    Position getTargetPosition(GraphNode paths[][]) {
+
+        int[][] enemyPaths = getEnemyPaths(gameMap.getEnemy().getPosition());
 
         Position enemyTarget = gameMap.getEnemy().getPosition();
         int enemyDistance = Integer.MAX_VALUE;
@@ -156,32 +139,13 @@ public class DijkstraBot extends BotAI {
 
 
     /**
-     * Calculates direction in which player must move to get to obtained target.
-     * @param paths - array of graph nodes
-     * @param source - starting position
-     * @param target - target position
-     * @return proper MoveDirection.
-     */
-    MoveDirection getDirectionTowardsTarget(GraphNode paths[][], Position source, Position target) {
-
-        if(target == null || source.equals(target))
-            return null;
-
-        while(!paths[target.getX()][target.getY()].source.equals(source))
-            target = paths[target.getX()][target.getY()].source;
-
-        return paths[target.getX()][target.getY()].directionFromSource;
-    }
-
-
-    /**
      * Sets distances from source by performing BFS algorithm.
-     * Treats bugs as walls.
+     * Sees bugs as walls.
      * Intended to be used for predicting enemy's next move.
      * @param source - starting position
      * @return - int array representing distances from source.
      */
-    int[][] getEnemyPaths(Position source) {
+    private int[][] getEnemyPaths(Position source) {
 
         int width = this.gameState.getBoardWidth();
         int height = this.gameState.getBoardHeight();

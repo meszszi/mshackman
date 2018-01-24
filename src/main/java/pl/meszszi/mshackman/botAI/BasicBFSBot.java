@@ -19,7 +19,8 @@ public class BasicBFSBot extends PathFindBot {
     /**
      * Executes basic BFS algorithm on game board and sets distances from hero to every accessible field on the map
      */
-    protected GraphNode[][] setDistances() {
+    @Override
+    GraphNode[][] setPaths() {
 
         int width = this.gameState.getBoardWidth();
         int height = this.gameState.getBoardHeight();
@@ -77,7 +78,8 @@ public class BasicBFSBot extends PathFindBot {
      * @param distances - array of distances from hero's position
      * @return position of the closest snippet
      */
-    protected Position getTargetPosition(GraphNode distances[][]) {
+    @Override
+    Position getTargetPosition(GraphNode distances[][]) {
         Position result = new Position(0, 0);
         int distance = Integer.MAX_VALUE;
 

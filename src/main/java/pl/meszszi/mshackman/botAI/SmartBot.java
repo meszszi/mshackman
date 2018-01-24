@@ -42,15 +42,11 @@ public class SmartBot extends DijkstraBot {
 
         gameMap.updateDanger();
 
-        Position heroPos = gameMap.getHero().getPosition();
-        Position enemyPos = gameMap.getEnemy().getPosition();
+        GraphNode paths[][] = setPaths();
 
-        DijkstraNode paths[][] = setPaths(heroPos);
-        int enemyPaths[][] = getEnemyPaths(enemyPos);
+        Position target = getTargetPosition(paths);
 
-        Position target = getOptimalTarget(paths, enemyPaths);
-
-        MoveDirection direction = getDirectionTowardsTarget(paths, heroPos, target);
+        MoveDirection direction = getDirectionToTarget(paths, gameMap.getHero().getPosition(), target);
 
         return new MoveRequest(direction);
     }
@@ -62,7 +58,9 @@ public class SmartBot extends DijkstraBot {
      * @return array of distances
      */
     @Override
-    DijkstraNode[][] setPaths(Position source) {
+    DijkstraNode[][] setPaths() {
+
+        Position source = gameMap.getHero().getPosition();
 
         int width = this.gameState.getBoardWidth();
         int height = this.gameState.getBoardHeight();

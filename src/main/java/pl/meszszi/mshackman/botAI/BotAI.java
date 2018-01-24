@@ -48,5 +48,5 @@ public abstract class BotAI {
 
     }
 
-    protected abstract MoveRequest getNextMove();
+    abstract MoveRequest getNextMove();
 }
