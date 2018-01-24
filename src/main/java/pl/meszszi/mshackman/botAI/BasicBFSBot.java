@@ -47,7 +47,7 @@ public class BasicBFSBot extends PathFindBot {
         distances[heroPos.getX()][heroPos.getY()] = new GraphNode(heroPos, null, null, 0);
 
         Position position;
-        int lol = 0;
+
         while(!queue.isEmpty() && (position = queue.remove()) != null) {
 
             GraphNode field = distances[position.getX()][position.getY()];
